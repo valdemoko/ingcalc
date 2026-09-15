@@ -1,9 +1,3 @@
 # Ads.txt for IngCalc
 # https://iabtechlab.com/ads-txt/
-#
-# Replace PUBLISHER_ID with your actual Google AdSense publisher ID
-# when you have one (e.g., pub-1234567890123456).
-#
-# Format: DOMAIN, PUBLISHER_ID, RELATIONSHIP, CERTIFICATION_AUTHORITY_ID
-#
-google.com, PUBLISHER_ID, DIRECT, f08c47fec0942fa0
+google.com, pub-1097809642955447, DIRECT, f08c47fec0942fa0
