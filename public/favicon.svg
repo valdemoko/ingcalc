@@ -1,0 +1,15 @@
+<svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    path, circle.stroke-line { stroke: #083A5C; }
+    circle.accent-dot { fill: #B45309; }
+    @media (prefers-color-scheme: dark) {
+      path, circle.stroke-line { stroke: #FFFFFF; }
+      circle.accent-dot { fill: #F5B04C; }
+    }
+  </style>
+  <circle class="stroke-line" cx="16" cy="6" r="2.5" stroke-width="2"/>
+  <path d="M14.5 8.2 L6.5 26.5" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M17.5 8.2 L25.5 26.5" stroke-width="2.2" stroke-linecap="round"/>
+  <path d="M10.2 20.5 A 9.5 9.5 0 0 0 21.8 20.5" stroke-width="1.8" stroke-linecap="round"/>
+  <circle class="accent-dot" cx="16" cy="22.8" r="2"/>
+</svg>
