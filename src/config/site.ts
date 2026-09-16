@@ -14,7 +14,7 @@ export const siteConfig = {
     "Free, accurate technical calculators for electrical, HVAC, mechanical, solar and engineering work. Clear formulas, worked examples and honest limitations.",
 
   /** No trailing slash. Override with NEXT_PUBLIC_SITE_URL in production. */
-  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://ingcalc.example.com").replace(/\/$/, ""),
+  url: (process.env.NEXT_PUBLIC_SITE_URL || "https://ingcalc.site").replace(/\/$/, ""),
   locale: "en_US",
 
   /** Owner / author. Display name is fixed; the profile URL comes from env. */
