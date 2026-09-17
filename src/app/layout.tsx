@@ -4,6 +4,7 @@ import { IBM_Plex_Sans, IBM_Plex_Mono } from "next/font/google";
 import { siteConfig } from "@/config/site";
 import { SiteHeader, SiteFooter } from "@/components/layout/SiteHeader";
 import { ConsentManager } from "@/components/consent/ConsentBanner";
+import { ConsentGate } from "@/components/consent/ConsentGate";
 import Script from "next/script";
 import "./globals.css";
 
@@ -56,28 +57,32 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           <SiteHeader />
           <main className="container">{children}</main>
           <SiteFooter />
-        </ConsentManager>
-        {siteConfig.adsense.client && (
-          <Script
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${siteConfig.adsense.client}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
-        {siteConfig.analytics.ga4 && (
-          <>
-            <Script
-              src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.analytics.ga4}`}
-              strategy="afterInteractive"
-            />
-            <Script id="ga4-init" strategy="afterInteractive">
-              {`window.dataLayer = window.dataLayer || [];
+          {/* Ad/analytics scripts load only after valid consent (ConsentGate).
+              With a certified CMP configured, the CMP owns consent and blocking. */}
+          {siteConfig.adsense.client && (
+            <ConsentGate>
+              <Script
+                src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${siteConfig.adsense.client}`}
+                crossOrigin="anonymous"
+                strategy="afterInteractive"
+              />
+            </ConsentGate>
+          )}
+          {siteConfig.analytics.ga4 && (
+            <ConsentGate>
+              <Script
+                src={`https://www.googletagmanager.com/gtag/js?id=${siteConfig.analytics.ga4}`}
+                strategy="afterInteractive"
+              />
+              <Script id="ga4-init" strategy="afterInteractive">
+                {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', '${siteConfig.analytics.ga4}');`}
-            </Script>
-          </>
-        )}
+              </Script>
+            </ConsentGate>
+          )}
+        </ConsentManager>
       </body>
     </html>
   );

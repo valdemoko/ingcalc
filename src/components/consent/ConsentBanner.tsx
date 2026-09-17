@@ -47,8 +47,14 @@ export function ConsentManager({ children }: { children?: ReactNode }) {
   }, []);
 
   // Certified CMP integration: load the vendor script, which handles consent itself.
+  // The app still renders inside the provider so consent-gated scripts can mount.
   if (cmpConfigured) {
-    return <Script src={siteConfig.adsense.cmpSrc} strategy="afterInteractive" />;
+    return (
+      <ConsentContext.Provider value={{ decision: null, reopen: () => {} }}>
+        {children}
+        <Script src={siteConfig.adsense.cmpSrc} strategy="afterInteractive" />
+      </ConsentContext.Provider>
+    );
   }
 
   const choose = (value: Decision) => {
