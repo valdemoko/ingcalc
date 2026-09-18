@@ -104,6 +104,20 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
       { label: "NEC 2014+ Chapter 9, Table 8 — Conductor Properties", url: "https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" },
       { label: "NEC Informational Note 210.19(A) — branch circuit voltage drop", url: "https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" },
     ],
+    sections: [
+      {
+        title: "Why 3% for branch circuits and 5% total",
+        paragraphs: [
+          "The numbers this calculator flags against come from NEC Informational Notes (not mandatory rules by themselves): 3% drop on a branch circuit, 5% combined feeder + branch. The reasoning behind them is practical, not arbitrary — at 5% drop a 120 V motor sees 114 V at startup, when it draws six times rated current and the extra drop is at its worst. Motors, compressors and LED drivers are the loads that complain first: brownout symptoms (slow starting, driver flicker, contactor chatter) usually show up on long runs before any code inspection does.",
+        ],
+      },
+      {
+        title: "The mistake the calculator can't catch: aluminum or the wrong table",
+        paragraphs: [
+          "The resistance values used here are for copper. Running the same numbers with aluminum conductors understates drop by roughly 60% — aluminum's resistivity is higher and its ampacity tables differ. The second classic error is sizing from DC resistance when the run is long and the load is harmonic-rich (VFDs, LED banks): AC skin effect and reactance add drop that Table 8 alone doesn't show. For those loads, verify against the manufacturer's voltage-drop guidance, not just the conductor table.",
+        ],
+      },
+    ],
     related: ["wire-size-calculator", "ohms-law-calculator", "kva-to-amps-calculator", "motor-current-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
@@ -166,6 +180,22 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
     ],
     references: [
       { label: "NEC Table 310.16 — Allowable Ampacities of Insulated Conductors", url: "https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" },
+    ],
+    sections: [
+      {
+        title: "Sizing is a chain, not a single lookup",
+        paragraphs: [
+          "A real wire-size decision runs four checks in sequence: ampacity (the table lookup this calculator performs), voltage drop on the actual run length, overcurrent protection matching the conductor, and the terminal temperature rating that caps the ampacity column you may use. Stopping after the first check is the classic undersizing error: a conductor that passes ampacity can still fail the 3% drop rule on a long run, and the fix is a size up, not a bigger breaker.",
+        ],
+      },
+      {
+        title: "The 125% rule and continuous loads",
+        bullets: [
+          "Continuous loads (3+ hours) require conductors and OCPD sized at 125% of the load — 16 A continuous means a 20 A circuit, not 15.",
+          "Derating for ambient temperature above 30 °C and for bundled conductors stacks multiplicatively with the 125% rule — check both before finalizing.",
+          "The calculator uses the 75 °C column for typical installations; 60 °C terminations (older devices, some equipment lugs) cap the table lower regardless of conductor rating.",
+        ],
+      },
     ],
     related: ["voltage-drop-calculator", "motor-current-calculator", "kva-to-amps-calculator", "ohms-law-calculator"],
     priority: "A",
@@ -302,6 +332,20 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
     references: [
       { label: "Apparent power and the power triangle — IEEE", url: "https://www.ieee.org/" },
     ],
+    sections: [
+      {
+        title: "kVA is what the wire carries — kW is what the load does",
+        paragraphs: [
+          "Every conversion on this page runs through the power triangle: kW (real work) and kVAR (reactive exchange) combine into kVA (apparent power), and only kVA sets the current. That is why a 10 kW load at PF 0.75 draws 13.3 kVA — a third more current for the same useful work. Transformers and generators are rated in kVA precisely because they must carry the whole triangle without knowing the load's power factor in advance.",
+        ],
+      },
+      {
+        title: "Where the √3 comes from",
+        paragraphs: [
+          "In a balanced three-phase system the three line currents are displaced 120°, and summing their vector contributions produces the factor √3 (≈1.732) between line-to-line voltage and phase quantities. The practical consequence: at the same kVA and the same conductor current per line, a three-phase system at 400 V delivers 1.73× the power of a single-phase system at 230 V — the reason everything above a few kW is wired three-phase.",
+        ],
+      },
+    ],
     related: ["ohms-law-calculator", "motor-current-calculator", "power-factor-calculator", "wire-size-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
@@ -359,6 +403,14 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
     ],
     references: [
       { label: "NEC Article 460 — Capacitors", url: "https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" },
+    ],
+    sections: [
+      {
+        title: "Correct only to 0.95 — past that you pay to overcorrect",
+        paragraphs: [
+          "The kVAR needed to move PF from 0.75 to 0.95 is substantial; moving from 0.95 to 1.00 needs far less in absolute terms, yet that last step is where capacitors become dangerous rather than useful. At light load an oversized fixed bank drives the PF capacitive and the voltage above nominal — a condition that stresses motors and trips variable-speed drives. That is why professional practice targets 0.95, uses automatic banks for variable loads, and never sizes motor capacitors beyond the NEC 460 recommendation: a capacitor fixed to a motor that overcorrects can self-excite the motor after disconnection, with damaging voltage spikes.",
+        ],
+      },
     ],
     related: ["kva-to-amps-calculator", "ohms-law-calculator", "motor-current-calculator", "voltage-drop-calculator"],
     priority: "B",
@@ -428,6 +480,22 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
     ],
     references: [
       { label: "NEC Article 430 — Motors, Tables 430.248/430.250", url: "https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" },
+    ],
+    sections: [
+      {
+        title: "Nameplate FLA beats any calculation",
+        paragraphs: [
+          "The result here is an estimate from power, efficiency and power factor — the three nameplate values that drift the most in real motors. When a nameplate FLA is available, code practice (NEC 430.6) uses the table or nameplate value for conductor and overload sizing, not a computed one, because real motor efficiency and PF at operating load differ from the rating points. Use this calculator for planning, load schedules and generator sizing; use the nameplate for the final wire and breaker decision.",
+        ],
+      },
+      {
+        title: "Starting current is a different problem",
+        bullets: [
+          "A typical induction motor draws 6–8× FLA at locked rotor for the first seconds — that is what breaker instantaneaous settings and generator sizing must tolerate.",
+          "Reduced-voltage starters, star-delta and soft starts exist to cut that inrush where the supply cannot handle it.",
+          "Sizing a generator: check both the running kVA and the starting surge — the surge usually decides, and this calculator's companion generator-sizing tool accounts for it.",
+        ],
+      },
     ],
     related: ["kva-to-amps-calculator", "wire-size-calculator", "power-factor-calculator", "voltage-drop-calculator"],
     priority: "A",

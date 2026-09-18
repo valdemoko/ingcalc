@@ -178,6 +178,22 @@ export const HVAC2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "DOE — central air conditioner efficiency standards", url: "https://www.energy.gov/eere/buildings/appliance-and-equipment-standards-program" },
     ],
+    sections: [
+      {
+        title: "The input that moves the result most: your actual kWh price",
+        paragraphs: [
+          "Every cost result scales linearly with the rate you enter, and rates vary more between utilities than equipment efficiency varies between models. Taking the price from a recent bill — not a national average — is the difference between a useful estimate and a decorative number. Time-of-use tariffs add a second layer: running the AC during peak windows can cost 2–3× the off-peak rate, which is why pre-cooling before peak hours is a real strategy where those tariffs exist.",
+        ],
+      },
+      {
+        title: "SEER is an average, not a promise",
+        bullets: [
+          "SEER is measured over a whole cooling season, so a 16 SEER unit at milder part-load conditions can beat its rating while a 14 SEER unit in brutal conditions may match it.",
+          "Replacing a 10 SEER unit with 16 SEER cuts cooling energy roughly 35–40% — but only if the new unit is correctly sized; oversizing erases much of the gain through cycling losses.",
+          "Compare units at the same rating standard (SEER vs SEER2 differ by test procedure since 2023) — cross-standard comparisons overstate differences.",
+        ],
+      },
+    ],
     related: ["seer-eer-converter", "energy-cost-calculator", "btu-calculator", "heating-load-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",

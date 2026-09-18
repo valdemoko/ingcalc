@@ -675,6 +675,14 @@ export const MECHANICAL2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "ISO 281 — rolling bearing dynamic load ratings and rating life", url: "https://www.iso.org/standard/60624.html" },
     ],
+    sections: [
+      {
+        title: "L10 life is a probability, not a warranty",
+        paragraphs: [
+          "The rating life this calculator computes is L10: the hours at which 90% of an identical group of bearings survives. Half the group will outlast the figure substantially; 10% will not reach it. Designing a spindle to its L10 life means one machine in ten fails first — which is why critical machinery uses L1 or L5 life (more conservative) and why a bearing that fails before L10 is not proof of a defective part, while one that fails at 20% of L10 usually indicates contamination, misalignment or overloading rather than a bad calculation.",
+        ],
+      },
+    ],
     related: ["metal-weight-calculator", "spring-rate-calculator", "hydraulic-cylinder-calculator", "chain-length-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",

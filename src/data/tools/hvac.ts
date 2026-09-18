@@ -97,6 +97,22 @@ export const HVAC_TOOLS: ToolDefinition[] = [
     references: [
       { label: "ACCA Manual J — Residential Load Calculation", url: "https://www.acca.org/standards/technical-manuals" },
     ],
+    sections: [
+      {
+        title: "Why oversizing is worse than undersizing",
+        paragraphs: [
+          "An oversized AC satisfies the thermostat before it has run long enough to dehumidify — the room reaches temperature while still feeling clammy, and the short cycling wears the compressor and increases demand peaks. A slightly undersized unit runs longer cycles: it dehumidifies properly, holds steadier comfort and typically outlives the oversized neighbor. That asymmetry is why professional sizing errs toward the smaller end when a result falls between two standard sizes, and why multiplying every margin conservatively in this calculator's inputs is the wrong instinct.",
+        ],
+      },
+      {
+        title: "When a rule of thumb is not enough",
+        bullets: [
+          "Rooms with large west- or south-facing glass, vaulted ceilings or kitchens need a room-by-room Manual J calculation — the screening model here averages what those loads separate.",
+          "Ducted systems add duct losses the room estimate doesn't include; the duct sizing tool gives the airflow side of that problem.",
+          "Mini-split indoor units come in fixed sizes (9k, 12k, 18k BTU/h); pick the nearest size below the result, not above.",
+        ],
+      },
+    ],
     related: ["heating-load-calculator", "duct-size-calculator", "airflow-cfm-calculator", "seer-eer-converter"],
     priority: "A",
     lastUpdated: "2026-09-15",

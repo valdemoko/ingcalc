@@ -71,6 +71,22 @@ export const SOLAR2_TOOLS: ToolDefinition[] = [
       { label: "NEC 690.7 — maximum PV system voltage (temperature-corrected)", url: "https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" },
       { label: "IEC 62548 — PV array design requirements", url: "https://www.iec.ch/" },
     ],
+    sections: [
+      {
+        title: "The cold-weather limit is the one that kills inverters",
+        paragraphs: [
+          "String Voc falls as temperature rises — which means the worst-case maximum voltage happens on the coldest clear morning of the year, not on a hot day. A string that measures safely below the inverter's maximum DC input in July can exceed it at −10 °C and destroy the inverter's input stage. This calculator applies the temperature coefficient of Voc from the panel datasheet; skipping that correction using standard test conditions is the single most common string-sizing failure in cold climates.",
+        ],
+      },
+      {
+        title: "Two limits to check, in this order",
+        bullets: [
+          "Maximum Voc (cold, corrected): the string's open-circuit voltage at record-low temperature must stay below the inverter's max DC input — an absolute, destructive limit.",
+          "Minimum MPPT voltage (hot): at high cell temperature and full sun, Vmp must stay above the inverter's MPPT floor or the inverter clips power.",
+          "Current: strings in parallel add Isc; the combined current must respect the inverter's max input current and the ×1.25 NEC sizing factor on the DC conductors.",
+        ],
+      },
+    ],
     related: ["charge-controller-calculator", "solar-panel-output-calculator", "off-grid-system-calculator", "wire-size-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",

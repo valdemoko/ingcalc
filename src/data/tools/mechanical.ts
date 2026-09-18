@@ -191,6 +191,22 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
       { label: "ISO 898-1 — Mechanical properties of fasteners", url: "https://www.iso.org/standard/64773.html" },
       { label: "VDI 2230 — Systematic calculation of bolted joints", url: "https://www.vdi.de/richtlinien/details/vdi-2230-blatt-1-systematische-berechnung-hochbeanspruchter-schraubenverbindungen" },
     ],
+    sections: [
+      {
+        title: "Torque to preload: why lubrication changes the answer by 40%",
+        paragraphs: [
+          "Only about 10–15% of the torque you apply stretches the bolt; the rest is friction under the head and in the threads. That is why the same torque value produces wildly different preload depending on lubrication — a dry, galvanized or anti-seize thread each maps torque to tension differently, and the calculator's friction assumption matters as much as the numbers themselves. The correct habit: pick the friction condition that matches your assembly, and use a torque wrench — the calculation is worthless if the tightening is done by feel.",
+        ],
+      },
+      {
+        title: "Grade markings and what they authorize",
+        bullets: [
+          "Metric 8.8, 10.9 and 12.9 (and SAE grade 5/8) have different yield strengths — applying a 12.9 torque table to an 8.8 bolt stretches it past yield, permanently.",
+          "Gasketed joints, aluminum castings and plastic housings may have torque limits set by the sealed component, not the bolt — a lower value wins.",
+          "Critical joints (brakes, pressure boundaries, structural flanges) follow the engineer's spec and a calibrated procedure, not a generic table.",
+        ],
+      },
+    ],
     related: ["tap-drill-calculator", "torque-power-calculator", "gear-ratio-calculator", "belt-length-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",

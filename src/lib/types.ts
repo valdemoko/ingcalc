@@ -92,7 +92,20 @@ export interface Reference {
   url: string;
 }
 
+/**
+ * Tool-specific editorial section: a differentiating block that belongs to ONE
+ * tool only (professional use case, advanced interpretation, common sizing
+ * error...). Never interchangeable between tools — that is the point.
+ */
+export interface ToolSection {
+  title: string;
+  paragraphs?: string[];
+  bullets?: string[];
+}
+
 export interface ToolDefinition {
+  /** Unique editorial section(s) shown after the interpretation block. Optional. */
+  sections?: ToolSection[];
   /** URL slug, unique across the whole site. */
   slug: string;
   category: CategoryKey;

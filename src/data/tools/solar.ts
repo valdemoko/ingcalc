@@ -56,6 +56,23 @@ export const SOLAR_TOOLS: ToolDefinition[] = [
       { label: "Global Solar Atlas — World Bank/ESMAP irradiance data", url: "https://globalsolaratlas.info/" },
       { label: "NREL PVWatts — reference derate methodology", url: "https://pvwatts.nrel.gov/" },
     ],
+    sections: [
+      {
+        title: "Peak sun hours are the number people get wrong",
+        paragraphs: [
+          "Peak sun hours are not daylight hours — they are the equivalent hours of full 1,000 W/m² irradiance per day. A location with 12 hours of summer daylight might deliver 6–7 peak sun hours; in winter the same spot can drop to 2–3. Sizing a system on an annual average hides that seasonal swing: an off-grid system that works in July fails in December. Use the worst-month figure for off-grid sizing, and the annual average only for grid-tied savings estimates.",
+        ],
+      },
+      {
+        title: "Real-world derates the textbook formula skips",
+        bullets: [
+          "Temperature: panel output falls roughly 0.3–0.5% per °C above 25 °C cell temperature — a hot roof can cost 10% of nameplate on a summer afternoon.",
+          "Soiling: dust, pollen and bird droppings cost 2–5% typically, more in dry climates without rain to clean the array.",
+          "Orientation and tilt: the correction factor this calculator applies assumes reasonable tilt; flat-mounted panels lose 10–15% versus optimal tilt at most latitudes.",
+          "Inverter efficiency: grid-tied systems lose a further 3–6% converting DC to AC — the panel figure here is DC-side.",
+        ],
+      },
+    ],
     related: ["battery-runtime-calculator", "off-grid-system-calculator", "charge-controller-calculator", "wire-size-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",

@@ -127,6 +127,26 @@ export default async function ToolPage({
         </ul>
       </section>
 
+      {tool.sections && tool.sections.length > 0 && (
+        <section className="prose-section">
+          {tool.sections.map((s, i) => (
+            <div key={i}>
+              <h2>{s.title}</h2>
+              {s.paragraphs?.map((p, j) => (
+                <p key={j}>{p}</p>
+              ))}
+              {s.bullets && s.bullets.length > 0 && (
+                <ul className="checklist">
+                  {s.bullets.map((b, j) => (
+                    <li key={j}>{b}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </section>
+      )}
+
       {tool.faqs.length > 0 && (
         <section className="prose-section">
           <h2>Frequently asked questions</h2>
