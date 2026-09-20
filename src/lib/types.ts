@@ -140,6 +140,12 @@ export interface ToolDefinition {
 
 export type CategoryStatus = "live" | "planned";
 
+export interface CategoryGroup {
+  title: string;
+  description?: string;
+  slugs: string[];
+}
+
 export interface CategoryDef {
   key: CategoryKey;
   name: string;
@@ -149,4 +155,6 @@ export interface CategoryDef {
   description: string;
   intro: string;
   status: CategoryStatus;
+  /** Thematic groups for the category page. Tools not listed here appear in an "All" section. */
+  groups?: CategoryGroup[];
 }

@@ -65,7 +65,7 @@ export const HVAC2_TOOLS: ToolDefinition[] = [
       { label: "Lawrence, M.G. (2005) — the relationship between RH and dew point", url: "https://journals.ametsoc.org/view/journals/bams/86/2/bams-86-2-225.xml" },
       { label: "Stull, R. (2011) — wet-bulb temperature approximation", url: "https://journals.ametsoc.org/view/journals/apme/50/7/jamc-d-11-0143.1.xml" },
     ],
-    related: ["heat-index-calculator", "wind-chill-calculator", "btu-calculator", "duct-velocity-calculator"],
+    related: ["heat-index-calculator", "wind-chill-calculator", "btu-calculator", "sensible-heat-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },

@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { LIVE_CATEGORIES, isValidCategoryKey, getCategory } from "@/lib/categories";
-import { toolsByCategory, toolPath } from "@/data/tools";
+import { toolsByCategory, getTool, toolPath } from "@/data/tools";
 import { getGuide } from "@/data/guides";
 import { categoryMetadata, breadcrumbJsonLd, type Crumb } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
@@ -30,6 +30,10 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
     { name: cat.name, path: cat.path },
   ];
 
+  // Build grouped display if groups are defined
+  const groupedSlugs = new Set(cat.groups?.flatMap((g) => g.slugs) ?? []);
+  const ungrouped = tools.filter((t) => !groupedSlugs.has(t.slug));
+
   return (
     <>
       <JsonLd
@@ -53,16 +57,45 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
       <h1>{cat.name} Calculators</h1>
       <p className="summary">{cat.intro}</p>
 
-      <ul className="tool-list">
-        {tools.map((t) => (
-          <li key={t.slug}>
-            <Link href={toolPath(t)}>
-              <span className="name">{t.name}</span>
-              <span className="desc" style={{ display: "block" }}>{t.description}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {cat.groups && cat.groups.length > 0 ? (
+        cat.groups.map((group) => {
+          const groupTools = group.slugs
+            .map((s) => getTool(s))
+            .filter((t): t is NonNullable<typeof t> => Boolean(t));
+          if (groupTools.length === 0) return null;
+          return (
+            <section key={group.title} style={{ marginTop: "var(--s5)" }}>
+              <h2 style={{ fontSize: "1.1rem", marginBottom: "var(--s2)" }}>{group.title}</h2>
+              {group.description && (
+                <p style={{ color: "var(--ink-faint)", fontSize: "0.92rem", marginBottom: "var(--s2)", maxWidth: "60ch" }}>
+                  {group.description}
+                </p>
+              )}
+              <ul className="tool-list">
+                {groupTools.map((t) => (
+                  <li key={t.slug}>
+                    <Link href={toolPath(t)}>
+                      <span className="name">{t.name}</span>
+                      <span className="desc" style={{ display: "block" }}>{t.description}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          );
+        })
+      ) : (
+        <ul className="tool-list">
+          {tools.map((t) => (
+            <li key={t.slug}>
+              <Link href={toolPath(t)}>
+                <span className="name">{t.name}</span>
+                <span className="desc" style={{ display: "block" }}>{t.description}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
 
       {getGuide(cat.key) && (
         <section className="prose-section">

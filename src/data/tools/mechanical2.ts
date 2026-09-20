@@ -124,7 +124,7 @@ export const MECHANICAL2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "ISO 6020-2 — hydraulic cylinder mounting dimensions", url: "https://www.iso.org/standard/19488.html" },
     ],
-    related: ["pump-power-calculator", "torque-power-calculator", "bolt-torque-calculator", "bearing-life-calculator"],
+    related: ["pump-power-calculator", "torque-power-calculator", "metal-weight-calculator", "bearing-life-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },
@@ -375,7 +375,7 @@ export const MECHANICAL2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "SAE — engine compression fundamentals", url: "https://www.sae.org/publications/" },
     ],
-    related: ["engine-displacement-calculator", "torque-power-calculator", "pulley-rpm-calculator", "bolt-torque-calculator"],
+    related: ["engine-displacement-calculator", "torque-power-calculator", "metal-weight-calculator", "spring-rate-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",
   },
@@ -493,7 +493,7 @@ export const MECHANICAL2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "ASME B107.14 — torque wrench calibration and use", url: "https://www.asme.org/codes-standards" },
     ],
-    related: ["bolt-torque-calculator", "torque-power-calculator", "spring-rate-calculator", "hydraulic-cylinder-calculator"],
+    related: ["bolt-torque-calculator", "tap-drill-calculator", "torque-power-calculator", "metal-weight-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },

@@ -468,7 +468,7 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "LED forward voltage and current — manufacturer datasheets", url: "https://www.vishay.com/en/leds/" },
     ],
-    related: ["resistor-color-code-calculator", "voltage-divider-calculator", "ohms-law-calculator", "energy-cost-calculator"],
+    related: ["resistor-color-code-calculator", "voltage-divider-calculator", "ohms-law-calculator", "wire-size-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",
   },
@@ -766,7 +766,7 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "NEC Chapter 9, Table 9 — Reactance Data", url: "https://www.nfpa.org/codes-and-standards/nfpa-70-standard-development/70" },
     ],
-    related: ["voltage-drop-calculator", "wire-resistance-calculator", "wire-size-calculator", "power-factor-calculator"],
+    related: ["voltage-drop-calculator", "wire-resistance-calculator", "wire-size-calculator", "wire-derating-calculator"],
     priority: "C",
     lastUpdated: "2026-09-15",
   },

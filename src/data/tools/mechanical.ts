@@ -55,7 +55,7 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
     references: [
       { label: "Machinery's Handbook — gear ratio fundamentals", url: "https://www.industrialpress.com/machinerys-handbook" },
     ],
-    related: ["torque-power-calculator", "belt-length-calculator", "tap-drill-calculator", "bolt-torque-calculator"],
+    related: ["gear-geometry-calculator", "pulley-rpm-calculator", "torque-power-calculator", "belt-length-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },
@@ -115,7 +115,7 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
     references: [
       { label: "ISO 80000-3 — SI units for rotational mechanics", url: "https://www.iso.org/standard/79916.html" },
     ],
-    related: ["gear-ratio-calculator", "bolt-torque-calculator", "belt-length-calculator", "motor-current-calculator"],
+    related: ["gear-ratio-calculator", "belt-length-calculator", "pulley-rpm-calculator", "motor-current-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },
@@ -207,7 +207,7 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
         ],
       },
     ],
-    related: ["tap-drill-calculator", "torque-power-calculator", "gear-ratio-calculator", "belt-length-calculator"],
+    related: ["tap-drill-calculator", "torque-wrench-extension-calculator", "torque-power-calculator", "metal-weight-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },
@@ -264,7 +264,7 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
     references: [
       { label: "Machinery's Handbook — belt drive geometry", url: "https://www.industrialpress.com/machinerys-handbook" },
     ],
-    related: ["gear-ratio-calculator", "torque-power-calculator", "bolt-torque-calculator", "tap-drill-calculator"],
+    related: ["pulley-rpm-calculator", "gear-ratio-calculator", "chain-length-calculator", "torque-power-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",
   },
@@ -324,7 +324,7 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
     references: [
       { label: "ISO 6410 / ISO 68-1 — screw threads representation & profiles", url: "https://www.iso.org/standard/63581.html" },
     ],
-    related: ["bolt-torque-calculator", "gear-ratio-calculator", "torque-power-calculator", "belt-length-calculator"],
+    related: ["bolt-torque-calculator", "metal-weight-calculator", "spring-rate-calculator", "torque-wrench-extension-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",
   },

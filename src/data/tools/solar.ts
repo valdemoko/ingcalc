@@ -133,7 +133,7 @@ export const SOLAR_TOOLS: ToolDefinition[] = [
     references: [
       { label: "Battery University — depth of discharge & cycle life", url: "https://batteryuniversity.com/article/bu-808-how-to-prolong-lithium-based-batteries" },
     ],
-    related: ["solar-panel-output-calculator", "off-grid-system-calculator", "charge-controller-calculator", "kva-to-amps-calculator"],
+    related: ["solar-panel-output-calculator", "off-grid-system-calculator", "charge-controller-calculator", "battery-bank-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },

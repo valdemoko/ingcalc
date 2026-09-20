@@ -324,7 +324,7 @@ export const SOLAR2_TOOLS: ToolDefinition[] = [
       { label: "NREL — solar resource and tilt optimization data", url: "https://www.nrel.gov/gis/solar.html" },
       { label: "Global Solar Atlas — location-specific yield", url: "https://globalsolaratlas.info/" },
     ],
-    related: ["solar-panel-output-calculator", "solar-savings-calculator", "panel-count-calculator", "string-sizing-calculator"],
+    related: ["solar-panel-output-calculator", "solar-savings-calculator", "panel-count-calculator", "charge-controller-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",
   },
