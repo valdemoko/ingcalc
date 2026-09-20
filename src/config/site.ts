@@ -24,8 +24,8 @@ export const siteConfig = {
     linkedin: process.env.NEXT_PUBLIC_AUTHOR_LINKEDIN || "",
   },
 
-  /** Contact email. Set NEXT_PUBLIC_CONTACT_EMAIL — empty = contact page shows a notice. */
-  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "",
+  /** Contact email. Set NEXT_PUBLIC_CONTACT_EMAIL — falls back to generic project contact. */
+  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "contacto.webproyectos@gmail.com",
 
   adsense: {
     /** Publisher ID, e.g. ca-pub-1234567890123456. Empty = ads fully disabled. */
