@@ -195,6 +195,62 @@ export const GUIDES: GuideDef[] = [
     ],
   },
   {
+    category: "construction",
+    title: "Construction Estimating Guide — Concrete, Masonry, Framing & Site Materials",
+    description:
+      "How construction quantities get figured: concrete volume and mix proportions, masonry counts, reinforcement, framing layout and material ordering — each step linked to its calculator.",
+    summary:
+      "The practical sequence of construction estimating: figure the geometry, apply the yield and waste factors, order the material — with the calculators for every step and the mistakes that cost real money.",
+    sections: [
+      {
+        heading: "Concrete: geometry first, then yield",
+        paragraphs: [
+          "Every concrete quantity starts as pure geometry — length × width × thickness — and then gets corrected twice: once for the voids that disappear when water hits the dry mix (the 1.54 factor if you're batching, nothing if you're ordering ready-mix), and once for the real world of uneven subgrades and spillage (5–10%). Mixing up which correction applies where is the classic estimating error: batching 1.0 yd³ of wet concrete requires 1.54 yd³ of dry ingredients, but ordering 1.0 yd³ from the truck requires 1.0 yd³ plus a margin.",
+          "The concrete calculator handles the geometry and the bag/yard conversion; the mix ratio calculator handles the batching split when you're mixing on site. They intentionally keep those two jobs separate.",
+        ],
+        toolLinks: ["concrete-calculator", "concrete-mix-ratio-calculator", "rebar-grid-calculator"],
+      },
+      {
+        heading: "Masonry: nominal dimensions do the work",
+        paragraphs: [
+          "Block and brick counts are area arithmetic once you internalize one convention: masonry is sized by its laid dimensions, joints included. An 8×8×16 CMU plus its mortar joint is exactly 8 in tall — so 12 courses build a precise 8 ft wall, and 1.125 blocks fill every square foot of face. Bricks work the same way: US modular runs 6.9 per ft² in stretcher bond because the joint is part of the module.",
+          "The block and brick calculators both include a 5% allowance for breakage and cuts. Resist stripping it: running short mid-wall means a second delivery minimum and, worse, brick from a different pallet lot that doesn't match.",
+        ],
+        toolLinks: ["cmu-block-calculator", "brick-calculator", "footing-size-calculator"],
+      },
+      {
+        heading: "Framing: the layout drives the lumber",
+        paragraphs: [
+          "Framing quantities derive from one number: the on-center spacing. Everything hangs off it — sheathing and drywall edges land on studs, openings get framed with doubled members, corners need backup. The stud wall calculator counts the studs from the layout; the board foot calculator prices the package when a yard quotes by volume rather than by the piece.",
+          "Stairs are the framing layout with the least tolerance: riser height must land under 7¾ in, tread over 10 in, and the whole run must fit the space. The stair calculator runs the layout and the code checks together, because solving them separately is how stairs get rebuilt.",
+        ],
+        toolLinks: ["stud-wall-calculator", "stair-calculator", "board-foot-calculator", "roof-pitch-calculator"],
+      },
+      {
+        heading: "Site materials: weight is the real constraint",
+        paragraphs: [
+          "Aggregates, asphalt and soil are sold by weight but estimated by volume, and the density between those units is where estimates break. Gravel at 1.4 tons per yard vs crushed stone at 1.6 is a 15% tonnage swing on the same hole. Compaction adds a second layer: delivered loose material shrinks 10–25% when rolled or settled, so the order quantity must exceed the compacted figure — the gravel and asphalt calculators build those margins in.",
+          "Delivery minimums shape small jobs more than unit prices: a 3-ton minimum load for 2 tons of gravel, or a plant minimum load for a driveway overlay, changes the economical choice from delivered to bagged. The calculators show both so the comparison is explicit.",
+        ],
+        toolLinks: ["gravel-calculator", "asphalt-calculator", "drywall-calculator"],
+      },
+    ],
+    faqs: [
+      {
+        q: "How much extra material should I order for waste?",
+        a: "It depends on the material: concrete 5%, block and brick 5%, lumber 10–15% (framing packages run higher with many openings), drywall 15%, aggregates 10% margin. Waste factors are already built into each calculator's order figures.",
+      },
+      {
+        q: "What's the most common estimating mistake?",
+        a: "Mixing up wet and dry volume for concrete, and loose and compacted volume for aggregates — both errors are 15–50% swings on the same number. The second most common is ignoring delivery minimums, which can double the effective cost of a small order.",
+      },
+      {
+        q: "Can these calculators replace a professional estimate?",
+        a: "They handle the quantity takeoff accurately — the geometric and conversion math where calculators beat mental math. Labor productivity, site conditions and local pricing still need an estimator's judgment, and structural sizing (footings, headers, beams) needs an engineer where codes require one.",
+      },
+    ],
+  },
+  {
     category: "solar-energy",
     title: "Solar Design Guide — Off-Grid Systems, String Sizing & Economics",
     description:

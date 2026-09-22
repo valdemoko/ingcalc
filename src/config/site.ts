@@ -11,7 +11,7 @@ export const siteConfig = {
   name: "IngCalc",
   tagline: "Free technical calculators and engineering tools",
   description:
-    "Free, accurate technical calculators for electrical, HVAC, mechanical, solar and engineering work. Clear formulas, worked examples and honest limitations.",
+    "Free, accurate technical calculators for electrical, HVAC, mechanical, construction, solar and engineering work. Clear formulas, worked examples and honest limitations.",
 
   /** No trailing slash. Override with NEXT_PUBLIC_SITE_URL in production. */
   url: (process.env.NEXT_PUBLIC_SITE_URL || "https://ingcalc.site").replace(/\/$/, ""),

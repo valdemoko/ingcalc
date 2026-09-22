@@ -48,6 +48,12 @@ export interface FieldDef {
   help?: string;
   /** Optional fields may be left blank (e.g. solvers where the blank is the unknown). */
   optional?: boolean;
+  /**
+   * Conditional visibility: the field is shown (and validated) only when this
+   * returns true for the current select values. Hidden fields keep their
+   * defaults and are not included in the calculation input.
+   */
+  showIf?: (raw: Record<string, string>) => boolean;
 }
 
 /** Engine input: `values` holds canonical numbers, `raw` holds select values and original strings. */
@@ -72,6 +78,28 @@ export interface CalcOutput {
   rows: OutputRow[];
   /** Contextual notes shown under the results (model used, approximations...). */
   notes?: string[];
+  /**
+   * Optional dynamic chart: plotted points computed by the engine so the
+   * visualization always matches the calculation (no decorative graphics).
+   */
+  chart?: ChartSpec;
+}
+
+export interface ChartSeries {
+  /** Legend label. */
+  label: string;
+  color: string;
+  /** Line points; x values must be ascending. */
+  points: { x: number; y: number }[];
+}
+
+export interface ChartSpec {
+  title: string;
+  xLabel: string;
+  yLabel: string;
+  /** Optional horizontal reference line (e.g. a code limit). */
+  refLine?: { y: number; label: string; color: string };
+  series: ChartSeries[];
 }
 
 export type CalcFn = (input: CalcInput) => CalcOutput;

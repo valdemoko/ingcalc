@@ -142,10 +142,29 @@ export const CATEGORIES: CategoryDef[] = [
     key: "construction",
     name: "Construction",
     path: "/tools/construction",
-    title: "Construction Calculators",
-    description: "Concrete, framing and materials calculators for construction professionals.",
-    intro: "Material quantity and structural estimation tools for construction work.",
-    status: "planned",
+    title: "Construction Calculators — Concrete, Masonry, Framing & Materials | IngCalc",
+    description:
+      "Free construction calculators: concrete volume and mix ratios, CMU block and brick takeoffs, rebar weight, stud walls, stairs, roof pitch, gravel and asphalt tonnage — with formulas, waste factors and IRC/ACI checks.",
+    intro:
+      "Estimating and layout tools for concrete, masonry, framing and site work. Every calculator states its yield data, density assumptions and code references, separates the geometric result from the ordering figure, and flags where the rule of thumb stops applying.",
+    status: "live",
+    groups: [
+      {
+        title: "Concrete & Masonry",
+        description: "Volume, mix proportions, block and brick counts, and reinforcement takeoffs.",
+        slugs: ["concrete-calculator", "concrete-mix-ratio-calculator", "cmu-block-calculator", "brick-calculator", "rebar-grid-calculator"],
+      },
+      {
+        title: "Structural Layout",
+        description: "Footing sizing, wall framing, stairs and roof geometry — the load-bearing layout tools.",
+        slugs: ["footing-size-calculator", "stud-wall-calculator", "stair-calculator", "roof-pitch-calculator"],
+      },
+      {
+        title: "Materials & Estimating",
+        description: "Lumber volume, aggregates, board and paving quantities for material orders.",
+        slugs: ["board-foot-calculator", "gravel-calculator", "drywall-calculator", "asphalt-calculator"],
+      },
+    ],
   },
   {
     key: "plumbing",

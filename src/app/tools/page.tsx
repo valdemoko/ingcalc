@@ -7,7 +7,7 @@ import { pageMetadata } from "@/lib/seo";
 export const metadata: Metadata = pageMetadata({
   title: "All Technical Calculators & Tools — by Category | IngCalc",
   description:
-    "Complete index of free technical calculators: electrical, HVAC, mechanical engineering and solar energy tools, organized by category with formulas and worked examples.",
+    "Complete index of free technical calculators: electrical, HVAC, mechanical engineering, construction and solar energy tools, organized by category with formulas and worked examples.",
   path: "/tools",
 });
 
@@ -16,7 +16,7 @@ export default function ToolsIndexPage() {
     <>
       <h1>All Technical Calculators &amp; Tools</h1>
       <p className="summary">
-        {TOOLS.length} free calculators across four engineering sectors. Every tool documents its
+        {TOOLS.length} free calculators across five engineering sectors. Every tool documents its
         formula, assumptions, limitations and a worked example — designed for practitioners who
         need to understand the result, not just see a number.
       </p>

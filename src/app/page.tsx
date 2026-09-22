@@ -31,11 +31,12 @@ export default function HomePage() {
     <>
       <JsonLd data={siteJsonLd()} />
       <section className="hero">
-        <span className="hero-kicker">{TOOLS.length} free calculators · 4 engineering sectors</span>
+        <span className="hero-kicker">{TOOLS.length} free calculators · {LIVE_CATEGORIES.length} engineering sectors</span>
         <h1>Free Technical Calculators &amp; Engineering Tools</h1>
         <p className="summary">
-          Accurate calculators for electrical, HVAC, mechanical and solar work — every tool shows
-          its formula, a worked example, its assumptions and its limitations. No fluff, no sign-up.
+          Accurate calculators for electrical, HVAC, mechanical, construction and solar work —
+          every tool shows its formula, a worked example, its assumptions and its limitations.
+          No fluff, no sign-up.
         </p>
         <div className="hero-chips" aria-label="Popular tools">
           {popular.map((t) =>

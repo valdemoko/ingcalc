@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import type { CalcInput, CalcOutput, FieldDef } from "@/lib/types";
 import { formatValue } from "@/lib/format";
+import { ResultChart } from "@/components/tools/ResultChart";
 
 interface Props {
   inputs: FieldDef[];
@@ -34,6 +35,8 @@ export function CalculatorForm({ inputs, calc, toolName }: Props) {
     let validationError: string | null = null;
 
     for (const f of inputs) {
+      // Hidden conditional fields are excluded from the calculation entirely.
+      if (f.showIf && !f.showIf(raw)) continue;
       const val = (raw[f.id] ?? "").trim();
       if (f.kind === "select") {
         rawOut[f.id] = val;
@@ -90,6 +93,12 @@ export function CalculatorForm({ inputs, calc, toolName }: Props) {
     setSubmitted(null);
   };
 
+  /** Fields currently visible: a field with showIf is shown only when its condition holds. */
+  const visibleInputs = useMemo(
+    () => inputs.filter((f) => !f.showIf || f.showIf(raw)),
+    [inputs, raw],
+  );
+
   const fieldId = (id: string) => `f-${id}`;
 
   return (
@@ -97,7 +106,7 @@ export function CalculatorForm({ inputs, calc, toolName }: Props) {
       <form onSubmit={onSubmit} noValidate>
         <fieldset>
           <legend className="sr-only">{toolName} inputs</legend>
-          {inputs.map((f) => (
+          {visibleInputs.map((f) => (
             <div className="field" key={f.id}>
               <label htmlFor={fieldId(f.id)}>
                 {f.label}
@@ -195,6 +204,7 @@ export function CalculatorForm({ inputs, calc, toolName }: Props) {
               ))}
             </tbody>
           </table>
+          {result.chart && <ResultChart spec={result.chart} />}
           {result.notes && result.notes.length > 0 && (
             <div className="results-notes">
               <strong>Notes:</strong>

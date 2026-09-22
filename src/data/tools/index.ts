@@ -8,6 +8,8 @@ import { MECHANICAL_TOOLS } from "@/data/tools/mechanical";
 import { MECHANICAL2_TOOLS } from "@/data/tools/mechanical2";
 import { SOLAR_TOOLS } from "@/data/tools/solar";
 import { SOLAR2_TOOLS } from "@/data/tools/solar2";
+import { CONSTRUCTION_TOOLS } from "@/data/tools/construction";
+import { CONSTRUCTION2_TOOLS } from "@/data/tools/construction2";
 
 /** The single source of truth for every tool on the site. */
 export const TOOLS: ToolDefinition[] = [
@@ -19,6 +21,8 @@ export const TOOLS: ToolDefinition[] = [
   ...MECHANICAL2_TOOLS,
   ...SOLAR_TOOLS,
   ...SOLAR2_TOOLS,
+  ...CONSTRUCTION_TOOLS,
+  ...CONSTRUCTION2_TOOLS,
 ];
 
 export function getTool(slug: string): ToolDefinition | undefined {
