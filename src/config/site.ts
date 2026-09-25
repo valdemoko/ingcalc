@@ -25,7 +25,11 @@ export const siteConfig = {
   },
 
   /** Contact email. Set NEXT_PUBLIC_CONTACT_EMAIL — falls back to generic project contact. */
-  contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL || "contacto.webproyectos@gmail.com",
+  contactEmail:
+    process.env.NEXT_PUBLIC_CONTACT_EMAIL &&
+    process.env.NEXT_PUBLIC_CONTACT_EMAIL !== "contacto@ingcalc.site"
+      ? process.env.NEXT_PUBLIC_CONTACT_EMAIL
+      : "contacto.webproyectos@gmail.com",
 
   adsense: {
     /** Publisher ID, e.g. ca-pub-1234567890123456. Empty = ads fully disabled. */
