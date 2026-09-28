@@ -73,7 +73,7 @@ export const SOLAR_TOOLS: ToolDefinition[] = [
         ],
       },
     ],
-    related: ["battery-runtime-calculator", "off-grid-system-calculator", "charge-controller-calculator", "wire-size-calculator"],
+    related: ["battery-runtime-calculator", "energy-consumption-calculator", "charge-controller-calculator", "dc-cable-loss-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },

@@ -8,7 +8,10 @@ import type { CalcOutput, CalcInput } from "@/lib/types";
 import { round } from "@/lib/format";
 import { COPPER_WIRES, getWire } from "./electrical";
 
-/** Wire resistance from material + geometry (length in ft, area in circular mils). */
+/**
+ * Wire resistance from material + geometry (length in ft, area in circular mils),
+ * corrected from the 75 °C table value to the requested conductor temperature.
+ */
 export function wireResistance(input: CalcInput): CalcOutput {
   const { values } = input;
   const lengthFt = values.length;
@@ -17,37 +20,57 @@ export function wireResistance(input: CalcInput): CalcOutput {
   const wire = getWire(awg);
   if (!wire) throw new Error("Unknown wire size");
   if (lengthFt < 0) throw new Error("Length cannot be negative");
+  const tempC = values.tempC ?? 75;
 
   const rhoFactor = material === "aluminum" ? 1.64 : 1; // Al ≈ 61% more resistance than Cu
+  // Temperature correction from the 75 °C reference (NEC Ch. 9 Table 8 basis):
+  // R(T) ≈ R75 × [1 + α75 × (T − 75)]. α75 = α20 / (1 + α20 × 55):
+  // copper α20 = 0.00393/°C → α75 ≈ 0.00323; aluminum 1350 α20 = 0.00429 → α75 ≈ 0.00321.
+  const alpha75 = material === "aluminum" ? 0.00321 : 0.00323;
+  const tempFactor = 1 + alpha75 * (tempC - 75);
+  if (tempFactor <= 0) throw new Error("Temperature far outside the model's valid range");
+
+  const ohmsPerKft = wire.ohmsPerKft * rhoFactor * tempFactor;
   const pathFt = 2 * lengthFt; // out-and-back
-  const ohms = (wire.ohmsPerKft * rhoFactor * pathFt) / 1000;
-  const ohmsM = (wire.ohmsPerKft * rhoFactor) / 3.28084 / 1000; // per meter
+  const ohms = (ohmsPerKft * pathFt) / 1000;
+  const ohmsM = ohmsPerKft / 3.28084 / 1000; // per meter
 
   return {
     rows: [
-      { label: "Resistance (round trip)", value: ohms, unit: "Ω", decimals: 4, primary: true, hint: `${lengthFt} ft out and back, at 75 °C.` },
-      { label: "Resistance per 1000 ft", value: wire.ohmsPerKft * rhoFactor, unit: "Ω/kft", decimals: 4 },
+      { label: "Resistance (round trip)", value: ohms, unit: "Ω", decimals: 4, primary: true, hint: `${lengthFt} ft out and back, at ${round(tempC, 0)} °C.` },
+      { label: "Resistance per 1000 ft", value: ohmsPerKft, unit: "Ω/kft", decimals: 4 },
       { label: "Resistance per meter", value: ohmsM, unit: "Ω/m", decimals: 5 },
       { label: "Cross-section", value: wire.mm2, unit: "mm²", decimals: 2 },
     ],
     notes: [
-      `Material: ${material === "aluminum" ? "aluminum (ρ multiplier 1.64 vs copper)" : "uncoated copper"} at 75 °C, from NEC Chapter 9 Table 8.`,
+      `Material: ${material === "aluminum" ? "aluminum (ρ multiplier 1.64 vs copper)" : "uncoated copper"}; base ${wire.ohmsPerKft} Ω/kft at 75 °C from NEC Chapter 9 Table 8, corrected to ${round(tempC, 0)} °C (×${round(tempFactor, 3)}).`,
       "Round-trip = twice the one-way length (both conductors carry current).",
       "DC resistance; AC adds a small skin-effect and reactance penalty at larger sizes.",
     ],
   };
 }
 
-/** Energy cost from power, hours and electricity rate. */
+/**
+ * Energy cost from electricity rate, entered either as device power + hours or
+ * directly as metered/known kWh per day.
+ */
 export function energyCost(input: CalcInput): CalcOutput {
   const { values } = input;
-  const watts = values.watts;
-  const hours = values.hours;
   const rate = values.rate;
-  const qty = values.quantity ?? 1;
-  if (watts <= 0 || hours < 0 || rate < 0) throw new Error("Invalid inputs");
+  if (rate < 0) throw new Error("Invalid inputs");
 
-  const kwhDay = (watts * qty * hours) / 1000;
+  const mode = input.raw.mode ?? "watts";
+  let kwhDay: number;
+  if (mode === "kwh") {
+    kwhDay = values.kwhPerDay;
+    if (!(kwhDay > 0)) throw new Error("Daily kWh must be positive");
+  } else {
+    const watts = values.watts;
+    const hours = values.hours;
+    const qty = values.quantity ?? 1;
+    if (watts <= 0 || hours < 0) throw new Error("Invalid inputs");
+    kwhDay = (watts * qty * hours) / 1000;
+  }
   const kwhMonth = kwhDay * 30.44;
   const kwhYear = kwhDay * 365;
   const costDay = kwhDay * rate;
@@ -64,7 +87,9 @@ export function energyCost(input: CalcInput): CalcOutput {
       { label: "Cost per year", value: costYear, unit: "$", decimals: 2, primary: true },
     ],
     notes: [
-      "Model: kWh = W × hours ÷ 1000; cost = kWh × rate. Month = 30.44 days, year = 365 days.",
+      mode === "kwh"
+        ? "Model: cost = kWh × rate, from the daily kWh you entered. Month = 30.44 days, year = 365 days."
+        : "Model: kWh = W × hours ÷ 1000; cost = kWh × rate. Month = 30.44 days, year = 365 days.",
       "Use the actual device wattage (nameplate or metered), not the PSU rating for computers.",
       "Utilities with tiered or time-of-use pricing need an average rate to be accurate.",
     ],

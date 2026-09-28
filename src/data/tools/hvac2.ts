@@ -436,7 +436,7 @@ export const HVAC2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "ASHRAE Handbook — Fundamentals, psychrometrics of air conditioning", url: "https://www.ashrae.org/technical-resources/ashrae-handbook" },
     ],
-    related: ["duct-velocity-calculator", "duct-size-calculator", "btu-calculator", "fan-laws-calculator"],
+    related: ["air-density-calculator", "duct-size-calculator", "btu-calculator", "temperature-conversion-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",
   },

@@ -28,9 +28,14 @@ export const CATEGORIES: CategoryDef[] = [
         slugs: ["voltage-drop-calculator", "ohms-law-calculator", "kva-to-amps-calculator", "three-phase-power-calculator", "motor-current-calculator", "power-factor-calculator"],
       },
       {
+        title: "Networks & Transients",
+        description: "Series and parallel networks, current dividers and RC charging behavior.",
+        slugs: ["series-resistor-calculator", "current-divider-calculator", "rc-time-constant-calculator"],
+      },
+      {
         title: "Components & Electronics",
-        description: "Resistor identification, voltage dividers and LED circuit design.",
-        slugs: ["resistor-color-code-calculator", "voltage-divider-calculator", "led-resistor-calculator"],
+        description: "Resistor identification, parallel networks, reactance, dividers and LED circuit design.",
+        slugs: ["resistor-color-code-calculator", "parallel-resistor-calculator", "reactance-calculator", "capacitor-energy-calculator", "voltage-divider-calculator", "led-resistor-calculator"],
       },
       {
         title: "Power Systems & Energy",
@@ -66,6 +71,11 @@ export const CATEGORIES: CategoryDef[] = [
         slugs: ["dew-point-calculator", "heat-index-calculator", "wind-chill-calculator"],
       },
       {
+        title: "Air Properties & Heat Pumps",
+        description: "Air density, psychrometric state points, heat pump COP at temperature, and exact temperature conversion.",
+        slugs: ["air-density-calculator", "psychrometric-calculator", "heat-pump-cop-calculator", "temperature-conversion-calculator"],
+      },
+      {
         title: "Efficiency & Cost",
         description: "SEER/EER/COP conversions and air conditioning running costs.",
         slugs: ["seer-eer-converter", "cooling-cost-calculator"],
@@ -86,7 +96,7 @@ export const CATEGORIES: CategoryDef[] = [
       {
         title: "Power Transmission",
         description: "Gears, belts, chains and pulleys — speed ratios, torque conversion and drive geometry.",
-        slugs: ["gear-ratio-calculator", "gear-geometry-calculator", "pulley-rpm-calculator", "belt-length-calculator", "chain-length-calculator", "torque-power-calculator"],
+        slugs: ["gear-ratio-calculator", "gear-geometry-calculator", "pulley-rpm-calculator", "pulley-system-calculator", "belt-length-calculator", "chain-length-calculator", "torque-power-calculator"],
       },
       {
         title: "Fasteners & Threading",
@@ -102,6 +112,16 @@ export const CATEGORIES: CategoryDef[] = [
         title: "Machine Elements",
         description: "Bearings, springs, material weight and structural considerations.",
         slugs: ["bearing-life-calculator", "spring-rate-calculator", "metal-weight-calculator"],
+      },
+      {
+        title: "Beams & Shafts",
+        description: "Cantilever deflection and stress, shaft torsion capacity and machine efficiency.",
+        slugs: ["cantilever-beam-calculator", "simple-beam-calculator", "shaft-torsion-calculator", "machine-efficiency-calculator"],
+      },
+      {
+        title: "Materials & Statics",
+        description: "Stress, strain, elastic modulus and power in linear motion.",
+        slugs: ["hooke-law-calculator", "power-from-force-calculator"],
       },
       {
         title: "Fluid Power",
@@ -132,9 +152,9 @@ export const CATEGORIES: CategoryDef[] = [
         slugs: ["battery-runtime-calculator", "battery-bank-calculator", "battery-charge-time-calculator", "off-grid-system-calculator"],
       },
       {
-        title: "Economics",
-        description: "Solar savings, payback period and system economics.",
-        slugs: ["solar-savings-calculator"],
+        title: "Economics & System Design",
+        description: "Load audits, inverter sizing, DC losses, array oversizing and payback economics.",
+        slugs: ["energy-consumption-calculator", "inverter-sizing-calculator", "dc-ac-ratio-calculator", "dc-cable-loss-calculator", "solar-savings-calculator"],
       },
     ],
   },
@@ -156,13 +176,18 @@ export const CATEGORIES: CategoryDef[] = [
       },
       {
         title: "Structural Layout",
-        description: "Footing sizing, wall framing, stairs and roof geometry — the load-bearing layout tools.",
-        slugs: ["footing-size-calculator", "stud-wall-calculator", "stair-calculator", "roof-pitch-calculator"],
+        description: "Footing sizing, wall framing, stairs, ramps and roof geometry — the layout tools.",
+        slugs: ["footing-size-calculator", "stud-wall-calculator", "stair-calculator", "ramp-calculator", "roof-pitch-calculator"],
+      },
+      {
+        title: "Site Work & Drainage",
+        description: "Earthwork cut and fill, storm runoff volumes and excavation quantities.",
+        slugs: ["cut-fill-calculator", "drainage-runoff-calculator", "excavation-calculator"],
       },
       {
         title: "Materials & Estimating",
-        description: "Lumber volume, aggregates, board and paving quantities for material orders.",
-        slugs: ["board-foot-calculator", "gravel-calculator", "drywall-calculator", "asphalt-calculator"],
+        description: "Lumber volume and weight, aggregates, finishes and paving quantities.",
+        slugs: ["board-foot-calculator", "lumber-weight-calculator", "gravel-calculator", "excavation-calculator", "drywall-calculator", "paint-calculator", "tile-calculator", "asphalt-calculator"],
       },
     ],
   },
@@ -170,19 +195,70 @@ export const CATEGORIES: CategoryDef[] = [
     key: "plumbing",
     name: "Plumbing & Water",
     path: "/tools/plumbing",
-    title: "Plumbing & Water Calculators",
-    description: "Pipe sizing, flow rate, pressure loss and water heating calculators.",
-    intro: "Flow, pressure and pipe sizing tools for plumbing and water systems.",
-    status: "planned",
+    title: "Plumbing Calculators — Pipe Sizing, Flow & Pressure Loss",
+    description:
+      "Free plumbing calculators: pipe velocity and sizing, Darcy-Weisbach pressure loss, water volume in pipes and tank capacity. Metric and imperial, with design velocity guidance.",
+    intro:
+      "Hydraulic tools for plumbers, installers and designers. Flow calculations use the internal diameter and the Darcy-Weisbach/Swamee-Jain model for pressure loss; every assumption (water at 20 °C, straight-pipe friction) is stated on the page.",
+    status: "live",
+    groups: [
+      {
+        title: "Flow & Sizing",
+        description: "Velocity checks, pipe sizing from flow limits, and water volume in runs.",
+        slugs: ["pipe-flow-calculator", "pipe-size-calculator", "pipe-volume-calculator"],
+      },
+      {
+        title: "Pressure & Storage",
+        description: "Pressure loss along runs and tank capacity for storage and dosing.",
+        slugs: ["pipe-pressure-drop-calculator", "tank-volume-calculator"],
+      },
+    ],
+  },
+  {
+    key: "thermodynamics",
+    name: "Thermodynamics & Heat Transfer",
+    path: "/tools/thermodynamics",
+    title: "Thermodynamics Calculators — Conduction, Expansion, Gas Laws & Heat",
+    description:
+      "Free thermodynamics calculators: wall conduction and U-value, thermal expansion, ideal gas law, sensible and latent heat, and heating power from flow — with sources and worked examples.",
+    intro:
+      "Heat-transfer and thermodynamic calculations for engineers and students: Fourier conduction with series resistances, material expansion, gas laws and the sensible/latent heat relations behind HVAC and process work.",
+    status: "live",
+    groups: [
+      {
+        title: "Heat Transfer",
+        description: "Conduction through walls, U-values and heating power from flow rates.",
+        slugs: ["heat-conduction-calculator", "heating-power-calculator"],
+      },
+      {
+        title: "Materials & Gases",
+        description: "Thermal expansion, ideal gas law and sensible/latent heat of common materials.",
+        slugs: ["thermal-expansion-calculator", "ideal-gas-calculator", "sensible-heat-latent-calculator"],
+      },
+    ],
   },
   {
     key: "cnc-manufacturing",
     name: "CNC & Manufacturing",
     path: "/tools/cnc-manufacturing",
-    title: "CNC & Manufacturing Calculators",
-    description: "Feeds and speeds, cutting time, thread data and machining calculators.",
-    intro: "Machining calculators for milling, turning and fabrication work.",
-    status: "planned",
+    title: "CNC & Machining Calculators — Speeds, Feeds, Cycle Time & MRR",
+    description:
+      "Free CNC and machining calculators: spindle RPM from cutting speed, table feed from chip load, cycle time, material removal rate and production planning.",
+    intro:
+      "Machining calculators for milling and turning: speeds and feeds, cycle-time quoting and removal rates. Starting values only — always verify against the tool manufacturer's cutting data.",
+    status: "live",
+    groups: [
+      {
+        title: "Speeds & Feeds",
+        description: "Spindle RPM from cutting speed and table feed from chip load.",
+        slugs: ["cutting-speed-calculator", "feed-rate-calculator"],
+      },
+      {
+        title: "Production",
+        description: "Cycle time, material removal rate and shift production planning.",
+        slugs: ["machining-cycle-time-calculator", "material-removal-rate-calculator", "production-rate-calculator"],
+      },
+    ],
   },
   {
     key: "automotive",

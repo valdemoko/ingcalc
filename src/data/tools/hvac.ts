@@ -113,7 +113,7 @@ export const HVAC_TOOLS: ToolDefinition[] = [
         ],
       },
     ],
-    related: ["heating-load-calculator", "duct-size-calculator", "airflow-cfm-calculator", "seer-eer-converter"],
+    related: ["heating-load-calculator", "duct-size-calculator", "psychrometric-calculator", "seer-eer-converter"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },
@@ -193,7 +193,7 @@ export const HVAC_TOOLS: ToolDefinition[] = [
     references: [
       { label: "ASHRAE Handbook — Fundamentals (load estimation)", url: "https://www.ashrae.org/technical-resources/ashrae-handbook" },
     ],
-    related: ["btu-calculator", "airflow-cfm-calculator", "duct-size-calculator", "seer-eer-converter"],
+    related: ["btu-calculator", "heat-pump-cop-calculator", "duct-size-calculator", "seer-eer-converter"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },

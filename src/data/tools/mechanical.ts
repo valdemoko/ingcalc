@@ -55,7 +55,7 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
     references: [
       { label: "Machinery's Handbook — gear ratio fundamentals", url: "https://www.industrialpress.com/machinerys-handbook" },
     ],
-    related: ["gear-geometry-calculator", "pulley-rpm-calculator", "torque-power-calculator", "belt-length-calculator"],
+    related: ["gear-geometry-calculator", "pulley-system-calculator", "torque-power-calculator", "shaft-torsion-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },
@@ -115,7 +115,7 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
     references: [
       { label: "ISO 80000-3 — SI units for rotational mechanics", url: "https://www.iso.org/standard/79916.html" },
     ],
-    related: ["gear-ratio-calculator", "belt-length-calculator", "pulley-rpm-calculator", "motor-current-calculator"],
+    related: ["gear-ratio-calculator", "belt-length-calculator", "pulley-rpm-calculator", "machine-efficiency-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },

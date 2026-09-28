@@ -151,7 +151,7 @@ export const CONSTRUCTION_TOOLS: ToolDefinition[] = [
         ],
       },
     ],
-    related: ["concrete-mix-ratio-calculator", "rebar-grid-calculator", "footing-size-calculator", "gravel-calculator"],
+    related: ["concrete-mix-ratio-calculator", "rebar-grid-calculator", "excavation-calculator", "drainage-runoff-calculator"],
     priority: "A",
     lastUpdated: "2026-09-22",
   },

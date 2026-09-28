@@ -272,23 +272,33 @@ export const MECHANICAL2_TOOLS: ToolDefinition[] = [
     slug: "engine-displacement-calculator",
     category: "mechanical",
     name: "Engine Displacement Calculator",
-    title: "Engine Displacement Calculator — Bore, Stroke & CC | IngCalc",
+    title: "Engine Displacement Calculator — CC, CID & Cubic Inches | IngCalc",
     description:
-      "Calculate engine displacement in cc, liters and cubic inches from bore, stroke and cylinder count. Per-cylinder volume included.",
+      "Calculate engine displacement in cc, liters, cubic inches (CID) and CI from bore, stroke and cylinder count. Per-cylinder volume included.",
     summary:
       "Enter bore, stroke and cylinders to get total displacement in cc, liters and CID — plus each cylinder's swept volume.",
     keywords: ["engine displacement calculator", "cc calculator", "cubic inch displacement", "engine size calculation"],
     inputs: [
-      { id: "bore", label: "Bore", kind: "number", unit: "mm", defaultValue: 86, min: 10, step: 0.5 },
-      { id: "stroke", label: "Stroke", kind: "number", unit: "mm", defaultValue: 86, min: 10, step: 0.5 },
+      { id: "bore", label: "Bore", kind: "number", defaultValue: 86, min: 10, step: 0.5,
+        unitOptions: [
+          { value: "mm", label: "mm", factor: 1 },
+          { value: "in", label: "inches (×25.4)", factor: 25.4 },
+        ],
+        defaultUnit: "mm" },
+      { id: "stroke", label: "Stroke", kind: "number", defaultValue: 86, min: 10, step: 0.5,
+        unitOptions: [
+          { value: "mm", label: "mm", factor: 1 },
+          { value: "in", label: "inches (×25.4)", factor: 25.4 },
+        ],
+        defaultUnit: "mm" },
       { id: "cylinders", label: "Cylinders", kind: "number", unit: "×", defaultValue: 4, min: 1, max: 16, step: 1 },
     ],
     calc: engineDisplacement,
     formula: ["V = π/4 × bore² × stroke × cylinders"],
     variables: [
       { symbol: "V", meaning: "Swept displacement", unit: "cc" },
-      { symbol: "bore", meaning: "Cylinder bore", unit: "mm" },
-      { symbol: "stroke", meaning: "Piston stroke", unit: "mm" },
+      { symbol: "bore", meaning: "Cylinder bore", unit: "mm or in" },
+      { symbol: "stroke", meaning: "Piston stroke", unit: "mm or in" },
     ],
     howItWorks: [
       "Each cylinder sweeps a cylinder of bore × stroke; π/4 × d² × h gives its volume.",
@@ -319,7 +329,7 @@ export const MECHANICAL2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "SAE J604 — engine terminology and definitions", url: "https://www.sae.org/standards/" },
     ],
-    related: ["compression-ratio-calculator", "torque-power-calculator", "pulley-rpm-calculator", "gear-ratio-calculator"],
+    related: ["compression-ratio-calculator", "torque-power-calculator", "pulley-system-calculator", "gear-ratio-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",
   },
@@ -683,7 +693,7 @@ export const MECHANICAL2_TOOLS: ToolDefinition[] = [
         ],
       },
     ],
-    related: ["metal-weight-calculator", "spring-rate-calculator", "hydraulic-cylinder-calculator", "chain-length-calculator"],
+    related: ["metal-weight-calculator", "spring-rate-calculator", "hooke-law-calculator", "chain-length-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",
   },

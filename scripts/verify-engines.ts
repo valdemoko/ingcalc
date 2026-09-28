@@ -55,6 +55,9 @@ const I = (values: Record<string, number>, raw: Record<string, string> = {}) => 
   const r3 = voltageDrop(I({ voltage: 480, current: 100, length: 200 }, { system: "three", wire: "4 AWG" }));
   check("vd 3ph 4AWG 200ft @100A → 10.66 V", r3.rows[0].value as number, 10.66, 0.01);
 
+  const rAl = voltageDrop(I({ voltage: 120, current: 15, length: 100 }, { system: "single", wire: "12 AWG", material: "aluminum" }));
+  check("vd 1ph 12AWG Al ×1.64 → 9.74 V", rAl.rows[0].value as number, 5.94 * 1.64, 0.01);
+
   const ohm = ohmsLaw(I({ current: 4.5, resistance: 51.1 }));
   check("ohm V = 230", ohm.rows[0].value as number, 229.95, 0.01);
   expectError("ohm no blank throws", () => ohmsLaw(I({ current: 1, resistance: 1, voltage: 1 })));

@@ -13,6 +13,7 @@ export type CategoryKey =
   | "solar-energy"
   | "construction"
   | "plumbing"
+  | "thermodynamics"
   | "cnc-manufacturing"
   | "automotive"
   | "agriculture"

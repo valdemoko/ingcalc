@@ -199,7 +199,7 @@ export const SOLAR2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "Battery University — charging with a power supply / CC-CV", url: "https://batteryuniversity.com/article/bu-405-charging-with-a-power-supply" },
     ],
-    related: ["battery-bank-calculator", "battery-runtime-calculator", "charge-controller-calculator", "ev-charge-time-calculator"],
+    related: ["battery-bank-calculator", "battery-runtime-calculator", "charge-controller-calculator", "dc-cable-loss-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",
   },
@@ -260,7 +260,7 @@ export const SOLAR2_TOOLS: ToolDefinition[] = [
       { label: "NREL — solar photovoltaic system cost benchmark", url: "https://www.nrel.gov/solar/market-research-analysis/solar-installed-system-cost" },
       { label: "LBNL — Selling Into the Sun (PV home value)", url: "https://emp.lbl.gov/publications/selling-sun-price-premium-analysis" },
     ],
-    related: ["solar-panel-output-calculator", "panel-count-calculator", "solar-tilt-calculator", "energy-cost-calculator"],
+    related: ["solar-panel-output-calculator", "panel-count-calculator", "dc-ac-ratio-calculator", "energy-cost-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },

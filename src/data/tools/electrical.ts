@@ -18,7 +18,7 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
     name: "Voltage Drop Calculator",
     title: "Voltage Drop Calculator (NEC) — Single & Three Phase | IngCalc",
     description:
-      "Calculate voltage drop, % drop, end-of-line voltage and power lost for copper circuits. Single and three phase, AWG and metric, with NEC-based conductor data.",
+      "Calculate voltage drop, % drop, end-of-line voltage and power lost for copper or aluminum circuits. Single and three phase, AWG and metric, with NEC-based conductor data.",
     summary:
       "Find the voltage drop in a copper circuit — absolute volts, percentage, final load voltage and heat loss. Uses NEC Chapter 9 Table 8 conductor resistances.",
     keywords: ["voltage drop calculator", "voltage drop formula", "wire voltage loss", "3 phase voltage drop"],
@@ -46,6 +46,14 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
         id: "wire", label: "Conductor", kind: "select", options: wireOptions, defaultOption: "12 AWG",
       },
       {
+        id: "material", label: "Material", kind: "select",
+        options: [
+          { value: "copper", label: "Copper" },
+          { value: "aluminum", label: "Aluminum" },
+        ],
+        defaultOption: "copper",
+      },
+      {
         id: "system", label: "System", kind: "select",
         options: [
           { value: "single", label: "Single-phase (2-wire)" },
@@ -67,7 +75,7 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
       { symbol: "L", meaning: "One-way run length", unit: "ft or m" },
     ],
     howItWorks: [
-      "The calculator looks up the DC resistance of the selected copper conductor at 75 °C from NEC Chapter 9 Table 8.",
+      "The calculator looks up the DC resistance of the selected conductor at 75 °C from NEC Chapter 9 Table 8 — aluminum applies the standard 1.64 ratio to the copper table values.",
       "For single-phase circuits the current path is out and back, so the one-way length is doubled. Three-phase circuits use the √3 factor with the one-way length.",
       "The drop is multiplied by the load current to get volts lost, then divided by the source voltage for the percentage.",
       "Power lost as heat is I²R — it grows with the square of the current, which is why undersized cables waste energy.",
@@ -77,12 +85,12 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
     interpretation:
       "The NEC recommends (Informational Note, 210.19) keeping branch-circuit drop at or below 3% and total drop (feeder + branch) at or below 5%. Above these values motors lose torque, lights dim and electronics may misbehave. The power-loss figure tells you how much energy is being burned in the cable for the life of the installation.",
     assumptions: [
-      "Uncoated copper conductors at 75 °C operating temperature.",
+      "Uncoated conductors at 75 °C operating temperature (aluminum modeled as the Table 8 copper ratio ×1.64).",
       "DC resistance only — AC reactance is ignored, which is accurate for conductors up to about 1/0 AWG and slightly optimistic for large conductors.",
       "Balanced three-phase load (no neutral current).",
     ],
     limitations: [
-      "Aluminum conductors are not included (about 61% higher resistance than copper).",
+      "Aluminum resistance uses a constant 1.64 copper ratio; exact Table 8 aluminum values differ slightly by size.",
       "Very long runs at high current in large conduit should be checked with the NEC reactance tables.",
       "Does not verify ampacity, termination temperature ratings or code compliance — voltage drop is a performance metric, not a substitute for circuit sizing.",
     ],
@@ -112,13 +120,13 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
         ],
       },
       {
-        title: "The mistake the calculator can't catch: aluminum or the wrong table",
+        title: "The mistake the calculator can't catch: the wrong table",
         paragraphs: [
-          "The resistance values used here are for copper. Running the same numbers with aluminum conductors understates drop by roughly 60% — aluminum's resistivity is higher and its ampacity tables differ. The second classic error is sizing from DC resistance when the run is long and the load is harmonic-rich (VFDs, LED banks): AC skin effect and reactance add drop that Table 8 alone doesn't show. For those loads, verify against the manufacturer's voltage-drop guidance, not just the conductor table.",
+          "The aluminum mode applies a constant 1.64 ratio to the copper Table 8 values — a good approximation across sizes, but real aluminum tables differ slightly and aluminum terminations demand proper preparation (oxidation inhibitor, correct torque). The second classic error is sizing from DC resistance when the run is long and the load is harmonic-rich (VFDs, LED banks): AC skin effect and reactance add drop that Table 8 alone doesn't show. For those loads, verify against the manufacturer's voltage-drop guidance, not just the conductor table.",
         ],
       },
     ],
-    related: ["wire-size-calculator", "ohms-law-calculator", "kva-to-amps-calculator", "motor-current-calculator"],
+    related: ["wire-size-calculator", "ohms-law-calculator", "kva-to-amps-calculator", "parallel-resistor-calculator"],
     priority: "A",
     lastUpdated: "2026-09-15",
   },

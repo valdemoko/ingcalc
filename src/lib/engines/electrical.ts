@@ -54,14 +54,18 @@ export function voltageDrop(input: CalcInput): CalcOutput {
   const current = values.current;
   const lengthFt = values.length;
   const system = input.raw.system ?? "single";
+  const material = input.raw.material ?? "copper";
   const awg = input.raw.wire ?? "12 AWG";
   const wire = getWire(awg);
   if (!wire) throw new Error("Unknown wire size");
   if (voltage <= 0 || current < 0 || lengthFt < 0) throw new Error("Invalid inputs");
 
+  // Aluminum: NEC Ch. 9 Table 8 ratio to copper is ~1.64 at every size.
+  const materialFactor = material === "aluminum" ? 1.64 : 1;
+
   // Circuit length = one-way distance; current path includes the return.
   const pathFt = system === "three" ? lengthFt : 2 * lengthFt;
-  const resistance = (wire.ohmsPerKft * pathFt) / 1000;
+  const resistance = (wire.ohmsPerKft * materialFactor * pathFt) / 1000;
   const phaseFactor = system === "three" ? Math.sqrt(3) : 1;
   const drop = current * resistance * phaseFactor;
   const dropPct = voltage > 0 ? (drop / voltage) * 100 : 0;
@@ -78,10 +82,10 @@ export function voltageDrop(input: CalcInput): CalcOutput {
       { label: "Voltage drop", value: dropPct, unit: "%", decimals: 2, primary: true, hint: "Drop as a percentage of source voltage." },
       { label: "Voltage at load", value: endVoltage, unit: "V", decimals: 3, hint: "Voltage available at the load end of the run." },
       { label: "Power lost in the wire", value: powerLost, unit: "W", decimals: 2, hint: "I²R heating loss — this energy is wasted as heat." },
-      { label: "Conductor resistance", value: resistance, unit: "Ω", decimals: 4, hint: `Total path resistance (${awg}, ${system === "three" ? "3-phase" : "1-phase"} path).` },
+      { label: "Conductor resistance", value: resistance, unit: "Ω", decimals: 4, hint: `Total path resistance (${awg} ${material}, ${system === "three" ? "3-phase" : "1-phase"} path).` },
     ],
     notes: [
-      `Conductor: ${awg} copper (${wire.mm2} mm² approx.), ${wire.ohmsPerKft} Ω per 1000 ft at 75 °C (NEC Ch. 9 Table 8).`,
+      `Conductor: ${awg} ${material === "aluminum" ? "aluminum (×1.64 copper-table ratio)" : `copper (${wire.mm2} mm² approx.)`}, ${round(wire.ohmsPerKft * materialFactor, 4)} Ω per 1000 ft at 75 °C (NEC Ch. 9 Table 8 basis).`,
       system === "three" ? "Three-phase model: Vd = √3 × I × R × L (one-way length)." : "Single-phase model: Vd = 2 × I × R × L (out-and-back path).",
       recommended,
       "Reactance is ignored — valid for small conductors at DC or low-frequency AC. For large conductors in conduit, AC reactance slightly increases the drop.",

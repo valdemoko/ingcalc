@@ -22,9 +22,9 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     slug: "wire-resistance-calculator",
     category: "electrical",
     name: "Wire Resistance Calculator",
-    title: "Wire Resistance Calculator — Copper & Aluminum | IngCalc",
+    title: "Wire Resistance Calculator — AWG Copper & Aluminum | IngCalc",
     description:
-      "Calculate wire resistance from AWG size, length and material. Copper and aluminum, per 1000 ft and per meter, based on NEC Chapter 9 Table 8 data.",
+      "Calculate wire resistance from AWG size, length and material. Copper and aluminum, per 1000 ft and per meter, with temperature correction — NEC Chapter 9 Table 8 data.",
     summary:
       "Find the electrical resistance of any copper or aluminum conductor from the AWG table — round trip and per-unit-length values for voltage drop math.",
     keywords: ["wire resistance calculator", "copper wire resistance", "aluminum wire resistance", "awg resistance table"],
@@ -40,9 +40,13 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
         options: [{ value: "copper", label: "Copper" }, { value: "aluminum", label: "Aluminum" }],
         defaultOption: "copper",
       },
+      {
+        id: "tempC", label: "Conductor temperature", kind: "number", unit: "°C", defaultValue: 75, min: -40, max: 250, step: 5,
+        help: "Table base is 75 °C; typical values: 20–25 °C ambient, 60/75/90 °C insulation ratings.",
+      },
     ],
     calc: wireResistance,
-    formula: ["R = ρ × L / A", "tabulated: Ω per 1000 ft at 75 °C (NEC Ch. 9 Table 8)"],
+    formula: ["R = ρ × L / A", "tabulated: Ω per 1000 ft at 75 °C (NEC Ch. 9 Table 8)", "R(T) = R₇₅ × [1 + α₇₅ × (T − 75)]   (temperature correction)"],
     variables: [
       { symbol: "R", meaning: "Resistance", unit: "Ω" },
       { symbol: "ρ", meaning: "Resistivity (material constant)", unit: "Ω·cmil/ft" },
@@ -52,6 +56,7 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     howItWorks: [
       "The tool reads the DC resistance at 75 °C from the NEC Chapter 9 Table 8 copper series.",
       "Aluminum applies a 1.64 multiplier — aluminum's resistivity is about 64% higher than copper's at the same geometry.",
+      "The temperature field corrects the 75 °C table value to your conductor temperature using the linear temperature coefficient (≈0.32%/°C near 75 °C for both materials) — cold conductors measure lower, hot conductors higher.",
       "The round-trip figure doubles the one-way length since both conductors carry current.",
     ],
     example:
@@ -72,6 +77,14 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
         a: "About 1.98 Ω per 1000 ft at 75 °C (NEC Chapter 9 Table 8). At room temperature it measures roughly 1.6 Ω/kft — resistance rises with temperature.",
       },
       {
+        q: "What is the resistance of 4/0 AWG aluminum?",
+        a: "4/0 AWG copper is 0.0608 Ω/1000 ft at 75 °C; aluminum is about 1.64× that, ≈0.10 Ω/1000 ft. Set the size to 4/0 and material to aluminum in the calculator for the exact figure at your temperature.",
+      },
+      {
+        q: "How does temperature affect wire resistance?",
+        a: "Resistance rises roughly linearly with temperature: about 0.32–0.39% per °C for copper and aluminum 1350. The 75 °C table values are ~18–20% above a 20 °C room-temperature measurement.",
+      },
+      {
         q: "Why is aluminum wire resistance higher?",
         a: "Aluminum's resistivity is about 64% higher than copper's. For the same ampacity, aluminum conductors are roughly two sizes larger, which offsets the cost advantage.",
       },
@@ -87,29 +100,38 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     slug: "energy-cost-calculator",
     category: "electrical",
     name: "Electricity Cost Calculator",
-    title: "Electricity Cost Calculator — Appliance Running Cost | IngCalc",
+    title: "Electricity Cost Calculator — kWh & Appliance Cost | IngCalc",
     description:
-      "Calculate what any appliance costs to run: kWh per day, month and year plus cost at your electricity rate. Multiplies for multiple identical devices.",
+      "Calculate electricity cost in kWh per day, month and year — from device watts and hours, or directly from metered kWh — at your electricity rate.",
     summary:
-      "Enter device watts, hours per day and your rate to get daily, monthly and yearly energy and cost — the standard appliance running-cost calculation.",
-    keywords: ["electricity cost calculator", "appliance running cost", "kwh cost calculator", "power consumption calculator"],
+      "Enter device watts and hours per day (or your metered kWh) plus your rate to get daily, monthly and yearly energy and cost.",
+    keywords: ["electricity cost calculator", "kwh cost calculator", "electricity cost calculator kwh", "appliance running cost", "power consumption calculator"],
     inputs: [
-      { id: "watts", label: "Device power", kind: "number", unit: "W", defaultValue: 1500, min: 0.5, step: 10 },
-      { id: "quantity", label: "Number of devices", kind: "number", unit: "×", defaultValue: 1, min: 1, max: 1000, step: 1 },
-      { id: "hours", label: "Hours running per day", kind: "number", unit: "h", defaultValue: 4, min: 0, max: 24, step: 0.5 },
-      { id: "rate", label: "Electricity rate", kind: "number", unit: "$/kWh", defaultValue: 0.15, min: 0, step: 0.01 },
+      {
+        id: "mode", label: "Input method", kind: "select",
+        options: [
+          { value: "watts", label: "Device power (watts × hours)" },
+          { value: "kwh", label: "Known energy (kWh per day)" },
+        ],
+        defaultOption: "watts",
+      },
+      { id: "watts", label: "Device power", kind: "number", unit: "W", defaultValue: 1500, min: 0.5, step: 10, showIf: (raw) => (raw.mode ?? "watts") === "watts" },
+      { id: "quantity", label: "Number of devices", kind: "number", unit: "×", defaultValue: 1, min: 1, max: 1000, step: 1, showIf: (raw) => (raw.mode ?? "watts") === "watts" },
+      { id: "hours", label: "Hours running per day", kind: "number", unit: "h", defaultValue: 4, min: 0, max: 24, step: 0.5, showIf: (raw) => (raw.mode ?? "watts") === "watts" },
+      { id: "kwhPerDay", label: "Energy consumed", kind: "number", unit: "kWh/day", defaultValue: 6, min: 0.01, step: 0.1, showIf: (raw) => raw.mode === "kwh", help: "From a meter, smart plug or the appliance's measured consumption." },
+      { id: "rate", label: "Electricity rate", kind: "number", unit: "$/kWh", defaultValue: 0.15, min: 0, step: 0.01, help: "Example editable value — use your bill's all-in rate (bill $ ÷ kWh used)." },
     ],
     calc: energyCost,
-    formula: ["kWh = W × hours ÷ 1000", "Cost = kWh × rate"],
+    formula: ["kWh = W × hours ÷ 1000   (or enter kWh directly)", "Cost = kWh × rate"],
     variables: [
       { symbol: "kWh", meaning: "Energy consumed", unit: "kilowatt-hour" },
       { symbol: "W", meaning: "Power draw", unit: "W" },
       { symbol: "rate", meaning: "Price per kWh", unit: "$/kWh" },
     ],
     howItWorks: [
+      "Two entry methods: device watts × hours (with a multiplier for identical devices), or a known daily kWh figure from a meter or smart plug.",
       "Energy = watts × hours ÷ 1000 gives kilowatt-hours; the tool extrapolates to month (30.44 days) and year (365 days).",
       "Cost multiplies energy by your rate — use the all-in rate including delivery charges for real accuracy.",
-      "The quantity field multiplies the whole calculation for fleets of identical devices (lights, servers, pumps).",
     ],
     example:
       "A 1500 W space heater running 4 h/day at $0.15/kWh: 6 kWh/day = 182 kWh/month = $27.40/month = $328/year. That number usually convinces people to lower the thermostat.",
@@ -127,6 +149,10 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
       {
         q: "How do I find my electricity rate?",
         a: "Divide the total amount of a bill by the kWh consumed — that all-in figure includes delivery and taxes, which is what you actually pay.",
+      },
+      {
+        q: "How do I calculate cost from kWh directly?",
+        a: "Switch the input method to 'Known energy' and enter the kWh (from a meter or smart plug reading): cost = kWh × your rate. No wattage estimate needed.",
       },
       {
         q: "How much does leaving a light on cost?",
@@ -307,7 +333,7 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "Electronics Tutorials — voltage divider networks", url: "https://www.electronics-tutorials.ws/dccircuits/voltage-divider.html" },
     ],
-    related: ["ohms-law-calculator", "resistor-color-code-calculator", "led-resistor-calculator", "wire-resistance-calculator"],
+    related: ["ohms-law-calculator", "resistor-color-code-calculator", "led-resistor-calculator", "series-resistor-calculator"],
     priority: "B",
     lastUpdated: "2026-09-15",
   },
@@ -537,12 +563,12 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     slug: "generator-sizing-calculator",
     category: "electrical",
     name: "Generator Size Calculator",
-    title: "Generator Size Calculator — Running & Starting Load | IngCalc",
+    title: "Generator Sizing Calculator — What Size Do I Need? | IngCalc",
     description:
-      "Size a backup generator from running watts and motor surge requirements. Includes the 25% continuous margin and motor starting guidance.",
+      "Generator sizing calculator: total your running watts, add the largest motor's starting surge and get the minimum kW rating, with the sizing formula explained.",
     summary:
       "Add up your running loads and the biggest motor surge to get the minimum generator rating — with the sizing logic that prevents nuisance shutdowns.",
-    keywords: ["generator size calculator", "generator sizing", "what size generator", "backup generator watts"],
+    keywords: ["generator sizing calculator", "what size generator do i need", "generator size calculator", "backup generator watts", "generator sizing formula"],
     inputs: [
       { id: "runningW", label: "Total running load", kind: "number", unit: "W", defaultValue: 3000, min: 100, step: 100, help: "Everything that runs simultaneously." },
       { id: "surgeW", label: "Largest motor surge", kind: "number", unit: "W", defaultValue: 0, min: 0, step: 100, optional: true, help: "Starting watts of the biggest motor (typically 2–3× its running wattage)." },
@@ -570,6 +596,20 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
       "Air conditioners and well pumps can surge 4–5× — check nameplate LRA.",
       "Transfer switch and grounding requirements are code matters, not sizing ones.",
     ],
+    sections: [
+      {
+        title: "Running watts vs starting watts",
+        paragraphs: [
+          "Running watts (rated watts) are what a device draws continuously: a refrigerator's compressor while running, a furnace fan at steady speed, every light bulb. Starting watts (surge watts) are the brief spike when a motor or compressor kicks on — typically 2–3× its running draw, up to 4–5× for hard-starting loads like well pumps and air conditioners. The surge lasts a second or two, but the generator must supply it without stalling or tripping. Sizing therefore always compares two numbers: total running load (with margin) and the single largest starting requirement — the calculator takes the larger of the two, which is the sizing formula in one line: max(running × 1.25, largest surge).",
+        ],
+      },
+      {
+        title: "kW, kVA and power factor on a generator nameplate",
+        paragraphs: [
+          "Real power (kW) does the work; apparent power (kVA) is what the alternator actually delivers, and they relate through the power factor: kW = kVA × PF. Generator nameplates are usually rated in kVA at a stated power factor — commonly 0.8 for standard three-phase sets (so a 10 kVA unit delivers 8 kW) — while small portable inverter generators are usually rated directly in watts for resistive loads. The catch is that your load mix sets the real PF: resistive loads (heaters, incandescent lights) run near PF 1.0, while motors sit around 0.8 at full load and lower at part load. If your loads are motor-heavy, the alternator's kVA ceiling can bind before the engine's kW ceiling does — which is another reason the surge figure, not just running watts, drives the sizing.",
+        ],
+      },
+    ],
     faqs: [
       {
         q: "What size generator for a house?",
@@ -578,6 +618,10 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
       {
         q: "Why 1.25 times the running load?",
         a: "Generators shouldn't run above ~80% of rating continuously — the margin also absorbs measurement error and future loads.",
+      },
+      {
+        q: "What is the generator sizing formula?",
+        a: "Required kW = max(running watts × 1.25, largest motor surge) ÷ 1000. Add the surge of every motor that could start simultaneously rather than just the largest one.",
       },
     ],
     references: [
