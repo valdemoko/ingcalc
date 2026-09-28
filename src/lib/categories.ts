@@ -291,6 +291,15 @@ export const CATEGORIES: CategoryDef[] = [
 
 export const LIVE_CATEGORIES = CATEGORIES.filter((c) => c.status === "live");
 
+/** Categories with a published, substantive design guide (not merely planned routes). */
+export const GUIDE_CATEGORY_KEYS: readonly CategoryKey[] = [
+  "electrical",
+  "hvac",
+  "mechanical",
+  "solar-energy",
+  "construction",
+];
+
 export function getCategory(key: CategoryKey): CategoryDef {
   const cat = CATEGORIES.find((c) => c.key === key);
   if (!cat) throw new Error(`Unknown category: ${key}`);

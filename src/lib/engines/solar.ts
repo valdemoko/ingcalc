@@ -5,7 +5,7 @@
  * - Panel output: E = Wp × PSH × derate (inverter, soiling, temperature ~ 0.8 combined default).
  * - Battery: usable energy = Wh × DoD × inverter efficiency; runtime = usable / load.
  */
-import type { CalcOutput, CalcInput } from "@/lib/types";
+import type { CalcOutput, CalcInput, ChartSpec } from "@/lib/types";
 import { round } from "@/lib/format";
 
 /** Daily energy from panel wattage and peak sun hours. */
@@ -22,6 +22,20 @@ export function panelOutput(input: CalcInput): CalcOutput {
   const kwhDay = whDay / 1000;
   const kwhMonth = kwhDay * 30.44;
   const kwhYear = kwhDay * 365;
+  const pshRange = Math.max(psh * 1.25, 5);
+  const chart: ChartSpec = {
+    title: "Daily energy vs. peak sun hours",
+    xLabel: "Peak sun hours (h/day)",
+    yLabel: "Energy (kWh/day)",
+    series: [{
+      label: `${wattPeak} Wp array · ${Math.round(derate * 100)}% system derate`,
+      color: "var(--signal)",
+      points: [0, 0.25, 0.5, 0.75, 1].map((fraction) => {
+        const hours = pshRange * fraction;
+        return { x: hours, y: (wattPeak * hours * derate) / 1000 };
+      }),
+    }],
+  };
 
   return {
     rows: [
@@ -35,6 +49,7 @@ export function panelOutput(input: CalcInput): CalcOutput {
       "Peak sun hours (PSH) = equivalent hours per day at 1000 W/m². Use local irradiance data (e.g. Global Solar Atlas): ~4–5 PSH is typical for mid-latitudes.",
       "Fixed south-facing tilt at latitude is assumed for northern-hemisphere sites.",
     ],
+    chart,
   };
 }
 

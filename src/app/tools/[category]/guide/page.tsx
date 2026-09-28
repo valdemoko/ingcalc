@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { LIVE_CATEGORIES, getCategory, isValidCategoryKey } from "@/lib/categories";
+import { getCategory, isValidCategoryKey } from "@/lib/categories";
 import { GUIDES, getGuide } from "@/data/guides";
-import { getTool, toolPath } from "@/data/tools";
+import { getTool, toolPath, toolsByCategory } from "@/data/tools";
 import { pageMetadata, breadcrumbJsonLd, type Crumb } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
@@ -84,8 +84,7 @@ export default async function GuidePage({ params }: { params: Promise<{ category
       <section className="prose-section">
         <h2>All {cat.name} calculators</h2>
         <ul className="tool-list">
-          {LIVE_CATEGORIES.filter((c) => c.key === category).length > 0 &&
-            (await import("@/data/tools")).toolsByCategory(category).map((t) => (
+          {toolsByCategory(category).map((t) => (
               <li key={t.slug}>
                 <Link href={toolPath(t)}>
                   <span className="name">{t.name}</span>

@@ -2,48 +2,31 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { LIVE_CATEGORIES } from "@/lib/categories";
+import { GUIDE_CATEGORY_KEYS, LIVE_CATEGORIES } from "@/lib/categories";
 
-/**
- * Mobile navigation drawer (visible <900px via .menu-toggle).
- * Client component only because of menu open state.
- */
 export function MobileMenu() {
   const [open, setOpen] = useState(false);
 
-  // Close on Escape and lock body scroll while open.
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: globalThis.KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
     };
-    document.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
+    document.addEventListener("keydown", closeOnEscape);
+    return () => document.removeEventListener("keydown", closeOnEscape);
   }, [open]);
 
-  // Reset if the viewport grows past the mobile breakpoint.
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 900px)");
-    const onChange = () => {
-      if (mq.matches) setOpen(false);
-    };
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
-  }, []);
+  const close = () => setOpen(false);
 
   return (
-    <>
+    <div className="mobile-navigation">
       <button
-        type="button"
         className="menu-toggle"
+        type="button"
         aria-expanded={open}
         aria-controls="mobile-menu"
-        aria-label={open ? "Close menu" : "Open menu"}
-        onClick={() => setOpen((v) => !v)}
+        aria-label={open ? "Close navigation menu" : "Open navigation menu"}
+        onClick={() => setOpen((current) => !current)}
       >
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           {open ? (
@@ -53,44 +36,23 @@ export function MobileMenu() {
           )}
         </svg>
       </button>
-
-      <nav
-        id="mobile-menu"
-        className={`mobile-menu${open ? " open" : ""}`}
-        aria-label="Mobile"
-        aria-hidden={!open}
-      >
-        <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
-          <li>
-            <Link href="/tools" onClick={() => setOpen(false)}>
-              All tools
-            </Link>
-          </li>
-          <li className="menu-group-label" aria-hidden="true">
-            Categories
-          </li>
-          {LIVE_CATEGORIES.map((c) => (
-            <li key={c.key}>
-              <Link href={c.path} onClick={() => setOpen(false)}>
-                {c.name}
-              </Link>
-            </li>
-          ))}
-          <li className="menu-group-label" aria-hidden="true">
-            Project
-          </li>
-          <li>
-            <Link href="/about" onClick={() => setOpen(false)}>
-              About
-            </Link>
-          </li>
-          <li>
-            <Link href="/contact" onClick={() => setOpen(false)}>
-              Contact
-            </Link>
-          </li>
-        </ul>
+      <nav id="mobile-menu" className={`mobile-menu${open ? " open" : ""}`} aria-label="Mobile navigation" aria-hidden={!open} inert={!open}>
+        <Link href="/tools" onClick={close}>All tools <span>Browse the full directory</span></Link>
+        <p className="menu-group-label">Engineering categories</p>
+        {LIVE_CATEGORIES.map((category) => (
+          <Link key={category.key} href={category.path} onClick={close}>
+            {category.name}<span>{category.path.replace("/tools/", "")}</span>
+          </Link>
+        ))}
+        <p className="menu-group-label">Project</p>
+        {LIVE_CATEGORIES.filter((category) => GUIDE_CATEGORY_KEYS.includes(category.key)).map((category) => (
+          <Link key={`${category.key}-guide`} href={`${category.path}/guide`} onClick={close}>
+            {category.name} guide
+          </Link>
+        ))}
+        <Link href="/about" onClick={close}>About IngCalc</Link>
       </nav>
-    </>
+      {open && <button type="button" className="mobile-menu-backdrop" aria-label="Close navigation menu" onClick={close} />}
+    </div>
   );
 }

@@ -8,7 +8,7 @@
  * - Duct sizing: equal-friction round duct equation Q = 0.455 · A · D^0.61 · ΔP^0.5
  *   (ASHRAE friction chart approximation for galvanized steel).
  */
-import type { CalcOutput, CalcInput } from "@/lib/types";
+import type { CalcOutput, CalcInput, ChartSpec } from "@/lib/types";
 import { round } from "@/lib/format";
 
 /** Cooling load estimate (BTU/h) from floor area with documented adjustments. */
@@ -92,6 +92,20 @@ export function ductSize(input: CalcInput): CalcOutput {
   const d = Math.pow(cfm / (7.82 * Math.sqrt(friction)), 0.4);
   const diameter = round(d, 1);
   const velocity = cfm / ((Math.PI * d * d) / 4 / 144);
+  const diameterRange = Math.max(d * 1.5, 4);
+  const chart: ChartSpec = {
+    title: "Airflow vs. round duct diameter",
+    xLabel: "Duct diameter (in)",
+    yLabel: "Air velocity (fpm)",
+    series: [{
+      label: `${round(cfm)} CFM airflow`,
+      color: "var(--blue-600)",
+      points: [0, 0.25, 0.5, 0.75, 1].map((fraction) => {
+        const diameter = diameterRange * (0.5 + fraction);
+        return { x: diameter, y: cfm / ((Math.PI * diameter * diameter) / 4 / 144) };
+      }),
+    }],
+  };
 
   // Standard nominal sizes to snap to.
   const nominal = [4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36];
@@ -109,6 +123,7 @@ export function ductSize(input: CalcInput): CalcOutput {
       `Friction rate used: ${friction} in. w.c. per 100 ft (typical residential systems are designed at 0.08–0.1).`,
       "Flexible duct has much higher resistance — if used, go one or two nominal sizes larger.",
     ],
+    chart,
   };
 }
 

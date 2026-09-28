@@ -11,5 +11,5 @@ import { CalculatorForm } from "@/components/tools/CalculatorForm";
 export function ToolCalculator({ slug }: { slug: string }) {
   const tool = getTool(slug);
   if (!tool) return null;
-  return <CalculatorForm inputs={tool.inputs} calc={tool.calc} toolName={tool.name} />;
+  return <CalculatorForm inputs={tool.inputs} calc={tool.calc} toolName={tool.name} toolSlug={tool.slug} />;
 }

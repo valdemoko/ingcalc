@@ -5,10 +5,9 @@ import { LIVE_CATEGORIES, getCategory } from "@/lib/categories";
 import { getTool, toolsByCategory, toolPath } from "@/data/tools";
 import { toolMetadata, breadcrumbJsonLd, faqJsonLd, toolJsonLd, type Crumb } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
-import { CalculatorForm } from "@/components/tools/CalculatorForm";
 import { ToolCalculator } from "@/components/tools/ToolCalculator";
+import { FormulaCard } from "@/components/tools/FormulaCard";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { ToolDiagram } from "@/components/tools/ToolDiagram";
 
 export function generateStaticParams() {
   return LIVE_CATEGORIES.flatMap((cat) =>
@@ -51,18 +50,29 @@ export default async function ToolPage({
     .filter((t): t is NonNullable<typeof t> => Boolean(t));
 
   return (
-    <article>
+    <article className="tool-page">
       <JsonLd
         data={[breadcrumbJsonLd(crumbs), toolJsonLd(tool, cat.name, cat.path), faqJsonLd(tool.faqs)]}
       />
       <Breadcrumbs crumbs={crumbs} />
 
-      <h1>{tool.name}</h1>
-      <p className="summary">{tool.summary}</p>
+      <div className="tool-intro">
+        <span className="tool-category-label">{cat.name} · Engineering calculator</span>
+        <h1>{tool.name}</h1>
+        <p className="summary">{tool.summary}</p>
+        <a href="#calculator" className="tool-jump">Open calculator <span aria-hidden="true">↓</span></a>
+      </div>
 
-      <ToolDiagram slug={tool.slug} />
-
-      <ToolCalculator slug={tool.slug} />
+      <div id="calculator" className="tool-workspace">
+        <ToolCalculator slug={tool.slug} />
+        <aside className="tool-context">
+          <FormulaCard formula={tool.formula} variables={tool.variables} />
+          <div className="context-card">
+            <span className="context-card-label">Calculation sequence</span>
+            <ol>{tool.howItWorks.slice(0, 3).map((step, index) => <li key={index}>{step}</li>)}</ol>
+          </div>
+        </aside>
+      </div>
 
       <p className="updated">Last updated: {tool.lastUpdated}</p>
 
@@ -73,30 +83,6 @@ export default async function ToolPage({
             <li key={i}>{s}</li>
           ))}
         </ul>
-      </section>
-
-      <section className="prose-section">
-        <h2>Formula</h2>
-        <pre className="formula-block">{tool.formula.join("\n")}</pre>
-        <table className="vars-table">
-          <caption className="sr-only">Formula variables</caption>
-          <thead>
-            <tr>
-              <th scope="col">Symbol</th>
-              <th scope="col">Meaning</th>
-              <th scope="col">Unit</th>
-            </tr>
-          </thead>
-          <tbody>
-            {tool.variables.map((v, i) => (
-              <tr key={i}>
-                <td><code>{v.symbol}</code></td>
-                <td>{v.meaning}</td>
-                <td>{v.unit}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </section>
 
       <section className="prose-section">

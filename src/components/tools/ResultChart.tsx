@@ -2,156 +2,84 @@
 
 import type { ChartSpec } from "@/lib/types";
 
-/**
- * Dynamic SVG line chart rendered from engine-computed data (ChartSpec).
- * No chart library: hand-rolled SVG keeps the bundle at zero extra KB.
- *
- * It re-renders on every new CalcOutput, so the plot always matches the
- * calculation that produced it — never decorative.
- *
- * UX layer: titled panel, clearer axis labels, series legend below the plot.
- */
+/** Engine-computed chart, rendered as compact responsive SVG without a charting dependency. */
 export function ResultChart({ spec }: { spec: ChartSpec }) {
-  const W = 560;
-  const H = 240;
-  const M = { top: 20, right: 20, bottom: 44, left: 64 };
+  const width = 560;
+  const height = 260;
+  const margin = { top: 28, right: 20, bottom: 50, left: 68 };
+  const allPoints = spec.series.flatMap((series) => series.points);
+  if (!allPoints.length || allPoints.some((point) => !Number.isFinite(point.x) || !Number.isFinite(point.y))) return null;
+  const allY = allPoints.map((point) => point.y);
+  if (spec.refLine && Number.isFinite(spec.refLine.y)) allY.push(spec.refLine.y);
+  const allX = allPoints.map((point) => point.x);
+  if (!allX.length || !allY.length) return null;
 
-  // Domain from data (padded 5%), including the reference line if present.
-  const allY = spec.series.flatMap((s) => s.points.map((p) => p.y));
-  if (spec.refLine) allY.push(spec.refLine.y);
-  const allX = spec.series.flatMap((s) => s.points.map((p) => p.x));
   let yMin = Math.min(...allY);
   let yMax = Math.max(...allY);
   let xMin = Math.min(...allX);
   let xMax = Math.max(...allX);
-  if (!Number.isFinite(yMin) || !Number.isFinite(yMax) || yMin === yMax) {
-    yMin = 0;
-    yMax = Math.max(1, yMax);
-  }
-  if (!Number.isFinite(xMin) || !Number.isFinite(xMax) || xMin === xMax) {
-    xMin = 0;
-    xMax = Math.max(1, xMax);
-  }
-  const yPad = (yMax - yMin) * 0.05 || 1;
-  yMin -= yPad;
-  yMax += yPad;
-  const xPad = (xMax - xMin) * 0.05 || 1;
-  xMin -= xPad;
-  xMax += xPad;
+  if (!Number.isFinite(yMin) || !Number.isFinite(yMax)) return null;
+  if (yMin === yMax) { yMin -= 0.5; yMax += 0.5; }
+  if (xMin === xMax) { xMin -= 0.5; xMax += 0.5; }
+  const yPadding = (yMax - yMin) * 0.06;
+  const xPadding = (xMax - xMin) * 0.04;
+  yMin -= yPadding;
+  yMax += yPadding;
+  xMin -= xPadding;
+  xMax += xPadding;
 
-  const sx = (x: number) => M.left + ((x - xMin) / (xMax - xMin)) * (W - M.left - M.right);
-  const sy = (y: number) => H - M.bottom - ((y - yMin) / (yMax - yMin)) * (H - M.top - M.bottom);
-
-  // 4 gridlines, rounded to readable steps.
-  const yTicks = Array.from({ length: 4 }, (_, i) => yMin + ((yMax - yMin) * (i + 1)) / 5);
-  const xTicks = Array.from({ length: 4 }, (_, i) => xMin + ((xMax - xMin) * (i + 1)) / 5);
-
-  const fmt = (n: number) =>
-    Math.abs(n) >= 1000 || (Math.abs(n) < 0.01 && n !== 0)
-      ? n.toExponential(1)
-      : Number(n.toPrecision(4)).toString();
+  const x = (value: number) => margin.left + ((value - xMin) / (xMax - xMin)) * (width - margin.left - margin.right);
+  const y = (value: number) => height - margin.bottom - ((value - yMin) / (yMax - yMin)) * (height - margin.top - margin.bottom);
+  const fmt = (value: number) => Math.abs(value) >= 1000 || (Math.abs(value) < 0.01 && value !== 0)
+    ? value.toExponential(1)
+    : Number(value.toPrecision(4)).toString();
+  const yTicks = Array.from({ length: 4 }, (_, index) => yMin + ((yMax - yMin) * (index + 1)) / 5);
+  const xTicks = Array.from({ length: 4 }, (_, index) => xMin + ((xMax - xMin) * (index + 1)) / 5);
+  const alternative = spec.series.map((series) => {
+    const first = series.points[0];
+    const last = series.points[series.points.length - 1];
+    return `${series.label}: ${fmt(first?.y ?? 0)} to ${fmt(last?.y ?? 0)} ${spec.yLabel} over ${fmt(first?.x ?? 0)} to ${fmt(last?.x ?? 0)} ${spec.xLabel}`;
+  }).join(". ");
 
   return (
-    <figure className="tool-chart tool-diagram-wrap" style={{ marginTop: "var(--s4)" }}>
-      <figcaption className="chart-title">{spec.title}</figcaption>
-      <svg
-        viewBox={`0 0 ${W} ${H}`}
-        className="tool-diagram"
-        role="img"
-        aria-label={spec.title}
-      >
-        {/* gridlines + tick labels */}
-        {yTicks.map((t, i) => (
-          <g key={`y${i}`}>
-            <line
-              x1={M.left}
-              y1={sy(t)}
-              x2={W - M.right}
-              y2={sy(t)}
-              stroke="var(--line)"
-              strokeWidth="1"
-              strokeDasharray="3,3"
-            />
-            <text x={M.left - 6} y={sy(t) + 4} textAnchor="end" className="diagram-label" fontSize="10">
-              {fmt(t)}
-            </text>
+    <figure className="tool-chart" aria-labelledby="chart-title">
+      <figcaption className="chart-title"><span id="chart-title">{spec.title}</span><span className="chart-units">{spec.xLabel} · {spec.yLabel}</span></figcaption>
+      <svg viewBox={`0 0 ${width} ${height}`} className="tool-chart-svg" role="img" aria-label={spec.title} aria-describedby="chart-description">
+        <desc id="chart-description">{alternative}{spec.refLine ? `. Reference: ${spec.refLine.label}.` : ""}</desc>
+        {yTicks.map((tick, index) => (
+          <g key={`y-${index}`}>
+            <line x1={margin.left} y1={y(tick)} x2={width - margin.right} y2={y(tick)} className="chart-gridline" />
+            <text x={margin.left - 8} y={y(tick) + 4} textAnchor="end" className="chart-tick">{fmt(tick)}</text>
           </g>
         ))}
-        {xTicks.map((t, i) => (
-          <g key={`x${i}`}>
-            <line
-              x1={sx(t)}
-              y1={H - M.bottom}
-              x2={sx(t)}
-              y2={M.top}
-              stroke="var(--line)"
-              strokeWidth="1"
-              strokeDasharray="3,3"
-            />
-            <text x={sx(t)} y={H - M.bottom + 16} textAnchor="middle" className="diagram-label" fontSize="10">
-              {fmt(t)}
-            </text>
+        {xTicks.map((tick, index) => (
+          <g key={`x-${index}`}>
+            <line x1={x(tick)} y1={margin.top} x2={x(tick)} y2={height - margin.bottom} className="chart-gridline vertical" />
+            <text x={x(tick)} y={height - margin.bottom + 17} textAnchor="middle" className="chart-tick">{fmt(tick)}</text>
           </g>
         ))}
-
-        {/* axes */}
-        <line x1={M.left} y1={M.top} x2={M.left} y2={H - M.bottom} stroke="var(--ink)" strokeWidth="1.5" />
-        <line x1={M.left} y1={H - M.bottom} x2={W - M.right} y2={H - M.bottom} stroke="var(--ink)" strokeWidth="1.5" />
-
-        {/* reference line */}
+        <line x1={margin.left} y1={margin.top} x2={margin.left} y2={height - margin.bottom} className="chart-axis" />
+        <line x1={margin.left} y1={height - margin.bottom} x2={width - margin.right} y2={height - margin.bottom} className="chart-axis" />
         {spec.refLine && (
           <g>
-            <line
-              x1={M.left}
-              y1={sy(spec.refLine.y)}
-              x2={W - M.right}
-              y2={sy(spec.refLine.y)}
-              stroke={spec.refLine.color}
-              strokeWidth="1.5"
-              strokeDasharray="6,4"
-            />
-            <text
-              x={W - M.right - 4}
-              y={sy(spec.refLine.y) - 5}
-              textAnchor="end"
-              className="diagram-label"
-              fontSize="10"
-              fill={spec.refLine.color}
-            >
-              {spec.refLine.label}
-            </text>
+            <line x1={margin.left} y1={y(spec.refLine.y)} x2={width - margin.right} y2={y(spec.refLine.y)} stroke={spec.refLine.color} className="chart-reference" />
+            <text x={width - margin.right - 4} y={y(spec.refLine.y) - 6} textAnchor="end" className="chart-reference-label">{spec.refLine.label}</text>
           </g>
         )}
-
-        {/* data series */}
-        {spec.series.map((s, i) => (
-          <polyline
-            key={i}
-            points={s.points.map((p) => `${sx(p.x)},${sy(p.y)}`).join(" ")}
-            fill="none"
-            stroke={s.color}
-            strokeWidth="2"
-          />
+        {spec.series.map((series, index) => (
+          <g key={series.label}>
+            <polyline points={series.points.map((point) => `${x(point.x)},${y(point.y)}`).join(" ")} fill="none" stroke={series.color} className="chart-series" />
+            {series.points.length === 1 && <circle cx={x(series.points[0].x)} cy={y(series.points[0].y)} r="4" fill={series.color} />}
+          </g>
         ))}
-
-        {/* axis titles */}
-        <text x={(W + M.left) / 2} y={H - 6} textAnchor="middle" className="diagram-label" fontSize="11">
-          {spec.xLabel}
-        </text>
-        <text
-          x={16}
-          y={(H - M.bottom + M.top) / 2}
-          textAnchor="middle"
-          className="diagram-label"
-          fontSize="11"
-          transform={`rotate(-90 16 ${(H - M.bottom + M.top) / 2})`}
-        >
-          {spec.yLabel}
-        </text>
+        <text x={(width + margin.left) / 2} y={height - 8} textAnchor="middle" className="chart-axis-label">{spec.xLabel}</text>
+        <text x={16} y={(height + margin.top - margin.bottom) / 2} textAnchor="middle" className="chart-axis-label" transform={`rotate(-90 16 ${(height + margin.top - margin.bottom) / 2})`}>{spec.yLabel}</text>
       </svg>
-      <figcaption aria-hidden="true">
-        {spec.series.map((s) => s.label).join(" · ")}
-      </figcaption>
+      <ul className="chart-legend" aria-label="Chart series">
+        {spec.series.map((series) => <li key={series.label}><span style={{ backgroundColor: series.color }} />{series.label}</li>)}
+        {spec.refLine && <li><span className="legend-dash" style={{ borderColor: spec.refLine.color }} />{spec.refLine.label}</li>}
+      </ul>
+      <p className="chart-text-alternative">Text summary: {alternative}{spec.refLine ? ` Reference line: ${spec.refLine.label}.` : ""}</p>
     </figure>
   );
 }

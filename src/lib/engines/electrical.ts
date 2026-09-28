@@ -5,7 +5,7 @@
  * Conductor data: NEC Chapter 9 Table 8 (DC resistance at 75 °C, uncoated copper)
  * and NEC Table 310.16 (75 °C ampacity column, ≤3 current-carrying conductors).
  */
-import type { CalcOutput, CalcInput } from "@/lib/types";
+import type { CalcOutput, CalcInput, ChartSpec } from "@/lib/types";
 import { round } from "@/lib/format";
 
 export interface Wire {
@@ -75,6 +75,23 @@ export function voltageDrop(input: CalcInput): CalcOutput {
     dropPct > 3
       ? `At ${round(dropPct, 2)}% drop, this exceeds the common 3% branch-circuit guideline — consider a larger conductor.`
       : `At ${round(dropPct, 2)}% drop, this is within the common 3% branch-circuit guideline.`;
+  const plotLength = Math.max(lengthFt * 1.2, 1);
+  const chart: ChartSpec = {
+    title: "Voltage drop vs. one-way run length",
+    xLabel: "Run length (ft)",
+    yLabel: "Voltage drop (%)",
+    refLine: { y: 3, label: "3% branch-circuit guideline", color: "var(--signal)" },
+    series: [{
+      label: `${awg} ${material} · ${system === "three" ? "3-phase" : "single-phase"}`,
+      color: "var(--blue-600)",
+      points: [0, 0.25, 0.5, 0.75, 1].map((fraction) => {
+        const run = plotLength * fraction;
+        const pathLength = system === "three" ? run : 2 * run;
+        const dropAtRun = (current * (wire.ohmsPerKft * materialFactor * pathLength / 1000) * phaseFactor / voltage) * 100;
+        return { x: run, y: dropAtRun };
+      }),
+    }],
+  };
 
   return {
     rows: [
@@ -90,6 +107,7 @@ export function voltageDrop(input: CalcInput): CalcOutput {
       recommended,
       "Reactance is ignored — valid for small conductors at DC or low-frequency AC. For large conductors in conduit, AC reactance slightly increases the drop.",
     ],
+    chart,
   };
 }
 

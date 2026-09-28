@@ -1,13 +1,12 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LIVE_CATEGORIES, isValidCategoryKey, getCategory } from "@/lib/categories";
+import { GUIDE_CATEGORY_KEYS, LIVE_CATEGORIES, isValidCategoryKey, getCategory } from "@/lib/categories";
 import { toolsByCategory, getTool, toolPath } from "@/data/tools";
 import { getGuide } from "@/data/guides";
 import { categoryMetadata, breadcrumbJsonLd, type Crumb } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
-import { ToolCard } from "@/components/tools/ToolCard";
 
 export function generateStaticParams() {
   return LIVE_CATEGORIES.map((c) => ({ category: c.key }));
@@ -55,13 +54,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         ]}
       />
       <Breadcrumbs crumbs={crumbs} />
-
-      <section className="page-head">
-        <span className="page-kicker">{cat.name}</span>
-        <h1>{cat.name} Calculators</h1>
-        <p className="summary">{cat.intro}</p>
-        <span className="tool-count">{tools.length} calculators</span>
-      </section>
+      <h1>{cat.name} Calculators</h1>
+      <p className="summary">{cat.intro}</p>
 
       {cat.groups && cat.groups.length > 0 ? (
         cat.groups.map((group) => {
@@ -70,45 +64,40 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             .filter((t): t is NonNullable<typeof t> => Boolean(t));
           if (groupTools.length === 0) return null;
           return (
-            <section key={group.title} className="tool-directory-section">
-              <div className="section-head">
-                <h2>{group.title}</h2>
-                <span className="section-count">{groupTools.length}</span>
-              </div>
+            <section key={group.title} style={{ marginTop: "var(--s5)" }}>
+              <h2 style={{ fontSize: "1.1rem", marginBottom: "var(--s2)" }}>{group.title}</h2>
               {group.description && (
-                <p className="tool-directory-intro">{group.description}</p>
+                <p style={{ color: "var(--ink-faint)", fontSize: "0.92rem", marginBottom: "var(--s2)", maxWidth: "60ch" }}>
+                  {group.description}
+                </p>
               )}
-              <div className="tool-cards">
+              <ul className="tool-list">
                 {groupTools.map((t) => (
-                  <ToolCard key={t.slug} tool={t} />
+                  <li key={t.slug}>
+                    <Link href={toolPath(t)}>
+                      <span className="name">{t.name}</span>
+                      <span className="desc" style={{ display: "block" }}>{t.description}</span>
+                    </Link>
+                  </li>
                 ))}
-              </div>
+              </ul>
             </section>
           );
         })
       ) : (
-        <div className="tool-cards">
+        <ul className="tool-list">
           {tools.map((t) => (
-            <ToolCard key={t.slug} tool={t} />
+            <li key={t.slug}>
+              <Link href={toolPath(t)}>
+                <span className="name">{t.name}</span>
+                <span className="desc" style={{ display: "block" }}>{t.description}</span>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
 
-      {ungrouped.length > 0 && cat.groups && cat.groups.length > 0 && (
-        <section className="tool-directory-section">
-          <div className="section-head">
-            <h2>More calculators</h2>
-            <span className="section-count">{ungrouped.length}</span>
-          </div>
-          <div className="tool-cards">
-            {ungrouped.map((t) => (
-              <ToolCard key={t.slug} tool={t} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {getGuide(cat.key) && (
+      {GUIDE_CATEGORY_KEYS.includes(cat.key) && getGuide(cat.key) && (
         <section className="prose-section">
           <h2>Design guide</h2>
           <p>

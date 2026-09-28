@@ -4,221 +4,221 @@ import { useMemo, useState } from "react";
 import type { CalcInput, CalcOutput, FieldDef } from "@/lib/types";
 import { formatValue } from "@/lib/format";
 import { ResultChart } from "@/components/tools/ResultChart";
+import { ToolDiagram } from "@/components/tools/ToolDiagram";
 
 interface Props {
   inputs: FieldDef[];
   calc: (input: CalcInput) => CalcOutput;
   toolName: string;
+  toolSlug: string;
 }
 
-/**
- * Generic calculator form driven entirely by the tool definition.
- * Number values are converted to canonical SI via the selected unit's factor.
- * Select fields pass through as strings on input.raw.
- */
-export function CalculatorForm({ inputs, calc, toolName }: Props) {
-  // units[fieldId] tracks the currently selected unit value.
+function parseInput(fields: FieldDef[], raw: Record<string, string>, units: Record<string, string>) {
+  const values: Record<string, number> = {};
+  const rawOut: Record<string, string> = {};
+
+  for (const field of fields) {
+    if (field.showIf && !field.showIf(raw)) continue;
+    const value = (raw[field.id] ?? "").trim();
+    if (field.kind === "select") {
+      rawOut[field.id] = value;
+      continue;
+    }
+    if (value === "") {
+      if (!field.optional) return { error: `Please enter a value for "${field.label}".` };
+      continue;
+    }
+    const number = Number(value.replace(",", "."));
+    if (!Number.isFinite(number)) return { error: `"${field.label}" must be a number.` };
+    const unit = units[field.id]
+      ? field.unitOptions?.find((option) => option.value === units[field.id])
+      : undefined;
+    const canonical = number * (unit?.factor ?? 1);
+    if (field.min !== undefined && canonical < field.min) {
+      return { error: `"${field.label}" must be at least ${field.min}${field.unit ? ` ${field.unit}` : ""}.` };
+    }
+    if (field.max !== undefined && canonical > field.max) {
+      return { error: `"${field.label}" must be at most ${field.max}${field.unit ? ` ${field.unit}` : ""}.` };
+    }
+    values[field.id] = canonical;
+  }
+  return { input: { values, raw: rawOut } as CalcInput };
+}
+
+/** Registry-driven UI; engine outputs remain authoritative for every result and chart. */
+export function CalculatorForm({ inputs, calc, toolName, toolSlug }: Props) {
   const [units, setUnits] = useState<Record<string, string>>(() =>
-    Object.fromEntries(inputs.map((f) => [f.id, f.defaultUnit ?? f.unitOptions?.[0]?.value ?? ""])),
+    Object.fromEntries(inputs.map((field) => [field.id, field.defaultUnit ?? field.unitOptions?.[0]?.value ?? ""])),
   );
   const [raw, setRaw] = useState<Record<string, string>>(() =>
-    Object.fromEntries(inputs.map((f) => [f.id, f.kind === "select" ? (f.defaultOption ?? f.options?.[0]?.value ?? "") : f.defaultValue !== undefined ? String(f.defaultValue) : ""])),
+    Object.fromEntries(inputs.map((field) => [
+      field.id,
+      field.kind === "select"
+        ? (field.defaultOption ?? field.options?.[0]?.value ?? "")
+        : field.defaultValue !== undefined
+          ? String(field.defaultValue)
+          : "",
+    ])),
   );
   const [submitted, setSubmitted] = useState<CalcInput | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<CalcOutput | null>(null);
 
-  const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const values: Record<string, number> = {};
-    const rawOut: Record<string, string> = {};
-    let validationError: string | null = null;
-
-    for (const f of inputs) {
-      // Hidden conditional fields are excluded from the calculation entirely.
-      if (f.showIf && !f.showIf(raw)) continue;
-      const val = (raw[f.id] ?? "").trim();
-      if (f.kind === "select") {
-        rawOut[f.id] = val;
-        continue;
-      }
-      if (val === "") {
-        // blank is allowed only for optional fields (solver unknowns)
-        if (!f.optional) {
-          validationError = `Please enter a value for "${f.label}".`;
-          break;
-        }
-        continue;
-      }
-      const num = Number(val.replace(",", "."));
-      if (!Number.isFinite(num)) {
-        validationError = `"${f.label}" must be a number.`;
-        break;
-      }
-      const unit = units[f.id] ? f.unitOptions?.find((u) => u.value === units[f.id]) : undefined;
-      const canonical = num * (unit?.factor ?? 1);
-      if (f.min !== undefined && canonical < f.min) {
-        validationError = `"${f.label}" must be at least ${f.min}${f.unit ? ` ${f.unit}` : ""}.`;
-        break;
-      }
-      if (f.max !== undefined && canonical > f.max) {
-        validationError = `"${f.label}" must be at most ${f.max}${f.unit ? ` ${f.unit}` : ""}.`;
-        break;
-      }
-      values[f.id] = canonical;
-    }
-
-    if (validationError) {
-      setError(validationError);
+  const runCalculation = (nextRaw: Record<string, string>, nextUnits: Record<string, string>, showError = true) => {
+    const parsed = parseInput(inputs, nextRaw, nextUnits);
+    if (!parsed.input) {
+      setError(showError ? parsed.error ?? "Check the values and try again." : null);
       setResult(null);
+      setSubmitted(null);
       return;
     }
-
-    const input: CalcInput = { values, raw: rawOut };
     try {
-      const output = calc(input);
+      const output = calc(parsed.input);
       setError(null);
       setResult(output);
-      setSubmitted(input);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Calculation failed — check your inputs.");
+      setSubmitted(parsed.input);
+    } catch (cause) {
+      setError(showError ? cause instanceof Error ? cause.message : "Calculation failed — check your inputs." : null);
       setResult(null);
+      setSubmitted(null);
     }
   };
 
+  const onSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    runCalculation(raw, units);
+  };
+
+  const changeRaw = (id: string, value: string) => {
+    const nextRaw = { ...raw, [id]: value };
+    setRaw(nextRaw);
+    if (submitted) runCalculation(nextRaw, units, false);
+    else if (error) setError(null);
+  };
+
+  const changeUnit = (id: string, value: string) => {
+    const nextUnits = { ...units, [id]: value };
+    setUnits(nextUnits);
+    if (submitted) runCalculation(raw, nextUnits, false);
+    else if (error) setError(null);
+  };
+
   const reset = () => {
-    setRaw(Object.fromEntries(inputs.map((f) => [f.id, f.kind === "select" ? (f.defaultOption ?? "") : f.defaultValue !== undefined ? String(f.defaultValue) : ""])));
+    setRaw(Object.fromEntries(inputs.map((field) => [
+      field.id,
+      field.kind === "select"
+        ? (field.defaultOption ?? field.options?.[0]?.value ?? "")
+        : field.defaultValue !== undefined
+          ? String(field.defaultValue)
+          : "",
+    ])));
     setResult(null);
     setError(null);
     setSubmitted(null);
   };
 
-  /** Fields currently visible: a field with showIf is shown only when its condition holds. */
-  const visibleInputs = useMemo(
-    () => inputs.filter((f) => !f.showIf || f.showIf(raw)),
-    [inputs, raw],
-  );
-
+  const visibleInputs = useMemo(() => inputs.filter((field) => !field.showIf || field.showIf(raw)), [inputs, raw]);
+  const diagramValues = useMemo(() => {
+    const values = { ...raw };
+    for (const field of inputs) {
+      if (field.unitOptions?.length) {
+        values[`${field.id}Unit`] = field.unitOptions.find((option) => option.value === units[field.id])?.label ?? "";
+      }
+    }
+    return values;
+  }, [inputs, raw, units]);
   const fieldId = (id: string) => `f-${id}`;
-
-  // Primary result = first row flagged primary (engines guarantee at most one
-  // meaningful "headline" value; take the first for the hero readout).
-  const primary = result?.rows.find((r) => r.primary);
+  const primary = result?.rows.find((row) => row.primary);
 
   return (
-    <div className="calc-card">
+    <section className="calc-card" aria-label={`${toolName} workspace`}>
       <div className="calc-card-head">
-        <span className="calc-card-label">Calculator</span>
+        <span className="calc-card-label">Engineering calculator</span>
         <span className="calc-card-name">{toolName}</span>
       </div>
       <form onSubmit={onSubmit} noValidate>
         <fieldset>
           <legend className="sr-only">{toolName} inputs</legend>
-          {visibleInputs.map((f) => (
-            <div className="field" key={f.id}>
-              <label htmlFor={fieldId(f.id)}>
-                {f.label}
-                {f.unit && f.kind === "number" && !f.unitOptions ? ` (${f.unit})` : ""}
-              </label>
-              <div className="field-row">
-                {f.kind === "select" ? (
-                  <select
-                    id={fieldId(f.id)}
-                    value={raw[f.id] ?? ""}
-                    onChange={(e) => setRaw({ ...raw, [f.id]: e.target.value })}
-                  >
-                    {f.options?.map((o) => (
-                      <option key={o.value} value={o.value}>
-                        {o.label}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <>
-                    <input
-                      id={fieldId(f.id)}
-                      type="number"
-                      inputMode="decimal"
-                      step="any"
-                      value={raw[f.id] ?? ""}
-                      onChange={(e) => setRaw({ ...raw, [f.id]: e.target.value })}
-                      aria-describedby={f.help ? `${fieldId(f.id)}-help` : undefined}
-                    />
-                    {f.unitOptions && (
-                      <select
-                        className="unit-select"
-                        aria-label={`Unit for ${f.label}`}
-                        value={units[f.id] ?? ""}
-                        onChange={(e) => setUnits({ ...units, [f.id]: e.target.value })}
-                      >
-                        {f.unitOptions.map((u) => (
-                          <option key={u.value} value={u.value}>
-                            {u.label}
-                          </option>
-                        ))}
+          <div className="calc-fields">
+            {visibleInputs.map((field) => {
+              const errorId = `${fieldId(field.id)}-error`;
+              const helpId = `${fieldId(field.id)}-help`;
+              const descriptions = [error ? errorId : null, field.help ? helpId : null].filter(Boolean).join(" ") || undefined;
+              const unitFactor = field.unitOptions?.find((option) => option.value === units[field.id])?.factor ?? 1;
+              const min = field.min === undefined ? undefined : field.min / unitFactor;
+              const max = field.max === undefined ? undefined : field.max / unitFactor;
+
+              return (
+                <div className="field" key={field.id}>
+                  <label htmlFor={fieldId(field.id)}>
+                    {field.label}
+                    {field.unit && field.kind === "number" && !field.unitOptions ? ` (${field.unit})` : ""}
+                  </label>
+                  <div className="field-row">
+                    {field.kind === "select" ? (
+                      <select id={fieldId(field.id)} value={raw[field.id] ?? ""} onChange={(event) => changeRaw(field.id, event.target.value)}>
+                        {field.options?.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
                       </select>
+                    ) : (
+                      <>
+                        <input
+                          id={fieldId(field.id)}
+                          type="number"
+                          inputMode="decimal"
+                          step={field.step ?? "any"}
+                          min={min}
+                          max={max}
+                          value={raw[field.id] ?? ""}
+                          onChange={(event) => changeRaw(field.id, event.target.value)}
+                          aria-describedby={descriptions}
+                          aria-invalid={Boolean(error)}
+                        />
+                        {field.unitOptions && (
+                          <select className="unit-select" aria-label={`Unit for ${field.label}`} value={units[field.id] ?? ""} onChange={(event) => changeUnit(field.id, event.target.value)}>
+                            {field.unitOptions.map((option) => <option key={option.value} value={option.value}>{option.label}</option>)}
+                          </select>
+                        )}
+                      </>
                     )}
-                  </>
-                )}
-              </div>
-              {f.help && (
-                <p className="help" id={`${fieldId(f.id)}-help`}>
-                  {f.help}
-                </p>
-              )}
-            </div>
-          ))}
+                  </div>
+                  {error && <p className="sr-only" id={errorId}>{error}</p>}
+                  {field.help && <p className="help" id={helpId}>{field.help}</p>}
+                </div>
+              );
+            })}
+          </div>
           <div className="calc-actions">
-            <button type="submit" className="btn">
-              Calculate
-            </button>
-            <button type="button" className="btn btn-secondary" onClick={reset}>
-              Reset
-            </button>
+            <button type="submit" className="btn">Calculate</button>
+            <button type="button" className="btn btn-secondary" onClick={reset}>Reset</button>
           </div>
         </fieldset>
       </form>
 
-      {error && (
-        <p className="error-msg" role="alert">
-          {error}
-        </p>
-      )}
+      <ToolDiagram slug={toolSlug} values={diagramValues} />
+      {error && <p className="error-msg" role="alert">{error}</p>}
 
       {result && submitted && (
-        <section className="results" aria-live="polite">
-          <h2>Results</h2>
+        <section className="results" aria-live="polite" aria-atomic="false">
+          <div className="results-head">
+            <h2>Calculated result</h2>
+            <span className="result-status">Updated with current inputs</span>
+          </div>
           {primary && (
-            <div className="result-hero">
-              <span className="result-hero-label">{primary.label}</span>
-              <span className="result-hero-value">
-                {formatValue(primary.value, primary.decimals)}
-                {primary.unit ? <span className="result-hero-unit"> {primary.unit}</span> : null}
-              </span>
+            <div className="result-hero" key={`${primary.label}-${primary.value}-${primary.unit}`}>
+              <span className="result-hero-label">Primary result · {primary.label}</span>
+              <span className="result-hero-value">{formatValue(primary.value, primary.decimals)}</span>
+              {primary.unit && <span className="result-hero-unit">{primary.unit}</span>}
               {primary.hint && <span className="result-hero-hint">{primary.hint}</span>}
             </div>
           )}
           <table className="results-table">
-            <caption className="sr-only">Calculation results</caption>
-            <thead>
-              <tr>
-                <th scope="col">Quantity</th>
-                <th scope="col" style={{ textAlign: "right" }}>
-                  Value
-                </th>
-              </tr>
-            </thead>
+            <caption className="sr-only">Calculation results for {toolName}</caption>
+            <thead><tr><th scope="col">Quantity</th><th scope="col" className="value-heading">Value</th></tr></thead>
             <tbody>
-              {result.rows.map((row, i) => (
-                <tr key={i} className={row.primary ? "primary" : undefined}>
-                  <td>
-                    {row.label}
-                    {row.hint && <span className="hint">{row.hint}</span>}
-                  </td>
-                  <td className="num">
-                    {formatValue(row.value, row.decimals)}
-                    {row.unit ? <span className="result-unit"> {row.unit}</span> : null}
-                  </td>
+              {result.rows.map((row, index) => (
+                <tr key={`${row.label}-${index}`} className={row.primary ? "primary" : undefined}>
+                  <td>{row.label}{row.hint && <span className="hint">{row.hint}</span>}</td>
+                  <td className="num">{formatValue(row.value, row.decimals)}{row.unit && <span className="result-unit"> {row.unit}</span>}</td>
                 </tr>
               ))}
             </tbody>
@@ -226,16 +226,12 @@ export function CalculatorForm({ inputs, calc, toolName }: Props) {
           {result.chart && <ResultChart spec={result.chart} />}
           {result.notes && result.notes.length > 0 && (
             <div className="results-notes">
-              <strong>Notes:</strong>
-              <ul>
-                {result.notes.map((n, i) => (
-                  <li key={i}>{n}</li>
-                ))}
-              </ul>
+              <strong>Engineering notes</strong>
+              <ul>{result.notes.map((note, index) => <li key={index}>{note}</li>)}</ul>
             </div>
           )}
         </section>
       )}
-    </div>
+    </section>
   );
 }
