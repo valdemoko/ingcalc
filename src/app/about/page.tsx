@@ -20,8 +20,8 @@ export default function AboutPage() {
       <h2>What this site is</h2>
       <p>
         {siteConfig.name} is a free library of technical calculators and engineering tools —
-        currently {TOOLS.length} tools across electrical, HVAC, mechanical and solar engineering,
-        growing by complete clusters rather than isolated calculators.
+        currently {TOOLS.length} tools across eight live engineering disciplines, growing by
+        complete clusters rather than isolated calculators.
       </p>
       <p>
         The premise is simple: give users a correct, useful technical answer immediately, and show
