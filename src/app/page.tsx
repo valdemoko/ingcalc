@@ -5,6 +5,9 @@ import { TOOLS, toolsByCategory, toolPath } from "@/data/tools";
 import { pageMetadata, siteJsonLd } from "@/lib/seo";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteConfig } from "@/config/site";
+import { SearchBox } from "@/components/tool/SearchBox";
+import { toSearchItems } from "@/lib/search";
+import { ToolCard } from "@/components/tools/ToolCard";
 
 export const metadata: Metadata = pageMetadata({
   title: `${siteConfig.name} — Free Technical Calculators for Engineers`,
@@ -25,58 +28,76 @@ const POPULAR = [
 ];
 
 export default function HomePage() {
-  const popular = POPULAR.map((s) => TOOLS.find((t) => t.slug === s)).filter(Boolean);
+  const popular = POPULAR.map((s) => TOOLS.find((t) => t.slug === s)).filter(
+    (t): t is NonNullable<typeof t> => Boolean(t),
+  );
+  const SEARCH_ITEMS = toSearchItems(TOOLS);
 
   return (
     <>
       <JsonLd data={siteJsonLd()} />
+
       <section className="hero">
-        <span className="hero-kicker">{TOOLS.length} free calculators · {LIVE_CATEGORIES.length} engineering sectors</span>
-        <h1>Free Technical Calculators &amp; Engineering Tools</h1>
+        <span className="hero-kicker">
+          {TOOLS.length} free calculators · {LIVE_CATEGORIES.length} engineering disciplines
+        </span>
+        <h1>Technical calculators that show their work</h1>
         <p className="summary">
-          Accurate calculators for electrical, HVAC, mechanical, construction and solar work —
-          every tool shows its formula, a worked example, its assumptions and its limitations.
-          No fluff, no sign-up.
+          Every tool ships with the exact formula, the standard behind its constants, a worked
+          example and its limitations. Built for electricians, HVAC techs, mechanical engineers
+          and solar designers who need to defend their numbers.
         </p>
-        <div className="hero-chips" aria-label="Popular tools">
-          {popular.map((t) =>
-            t ? (
-              <a key={t.slug} href={toolPath(t)}>
-                {t.name}
-              </a>
-            ) : null,
-          )}
+        <div className="hero-search">
+          <SearchBox items={SEARCH_ITEMS} placeholder="Search calculators…" />
         </div>
       </section>
 
-      <h2>Browse by category</h2>
+      <div className="stats-band" role="list" aria-label="Library stats">
+        <div className="stat" role="listitem">
+          <span className="stat-num">{TOOLS.length}</span>
+          <span className="stat-label">Calculators</span>
+        </div>
+        <div className="stat" role="listitem">
+          <span className="stat-num">{LIVE_CATEGORIES.length}</span>
+          <span className="stat-label">Disciplines</span>
+        </div>
+        <div className="stat" role="listitem">
+          <span className="stat-num">113→</span>
+          <span className="stat-label">Formulas shown on-page</span>
+        </div>
+        <div className="stat" role="listitem">
+          <span className="stat-num">0</span>
+          <span className="stat-label">Sign-ups, ever</span>
+        </div>
+      </div>
+
+      <div className="section-head">
+        <h2>Most used this week</h2>
+      </div>
+      <div className="tool-cards">
+        {popular.map((t) => (
+          <ToolCard key={t.slug} tool={t} showCategory />
+        ))}
+      </div>
+
+      <div className="section-head">
+        <h2>Browse by discipline</h2>
+      </div>
       <div className="cat-grid">
         {LIVE_CATEGORIES.map((cat) => {
           const tools = toolsByCategory(cat.key);
           return (
             <Link key={cat.key} href={cat.path} className="cat-card">
-              <h3>{cat.name}</h3>
-              <span className="tool-count">
-                {tools.length} tool{tools.length === 1 ? "" : "s"}
-              </span>
+              <div className="cat-card-head">
+                <h3>{cat.name}</h3>
+                <span className="tool-count">
+                  {tools.length}
+                </span>
+              </div>
               <p>{cat.description}</p>
             </Link>
           );
         })}
-      </div>
-
-      <h2>Design guides</h2>
-      <p className="summary" style={{ marginBottom: 8 }}>
-        How each discipline&apos;s calculations fit together — load, conductor, protection,
-        economics — with the right calculator at every step.
-      </p>
-      <div className="related-grid">
-        {LIVE_CATEGORIES.map((cat) => (
-          <Link key={cat.key} href={`/tools/${cat.key}/guide`} className="related-card">
-            <span className="name">{cat.name} design guide</span>
-            <span className="cat" style={{ display: "block" }}>Reference</span>
-          </Link>
-        ))}
       </div>
 
       <section className="prose-section">
@@ -93,6 +114,22 @@ export default function HomePage() {
           calculators.
         </p>
       </section>
+
+      <div className="section-head">
+        <h2>Design guides</h2>
+      </div>
+      <p className="summary" style={{ marginBottom: 8 }}>
+        How each discipline&apos;s calculations fit together — load, conductor, protection,
+        economics — with the right calculator at every step.
+      </p>
+      <div className="related-grid">
+        {LIVE_CATEGORIES.map((cat) => (
+          <Link key={cat.key} href={`/tools/${cat.key}/guide`} className="related-card">
+            <span className="name">{cat.name} design guide</span>
+            <span className="cat" style={{ display: "block" }}>Reference</span>
+          </Link>
+        ))}
+      </div>
 
       <section className="prose-section">
         <h2>How tools are developed</h2>

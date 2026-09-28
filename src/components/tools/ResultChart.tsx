@@ -4,11 +4,12 @@ import type { ChartSpec } from "@/lib/types";
 
 /**
  * Dynamic SVG line chart rendered from engine-computed data (ChartSpec).
- * No new CSS: uses existing classes/variables only (tool-diagram-wrap,
- * diagram-label, inline SVG presentation attributes).
+ * No chart library: hand-rolled SVG keeps the bundle at zero extra KB.
  *
  * It re-renders on every new CalcOutput, so the plot always matches the
  * calculation that produced it — never decorative.
+ *
+ * UX layer: titled panel, clearer axis labels, series legend below the plot.
  */
 export function ResultChart({ spec }: { spec: ChartSpec }) {
   const W = 560;
@@ -51,7 +52,8 @@ export function ResultChart({ spec }: { spec: ChartSpec }) {
       : Number(n.toPrecision(4)).toString();
 
   return (
-    <figure className="tool-diagram-wrap" style={{ marginTop: "var(--s4)" }}>
+    <figure className="tool-chart tool-diagram-wrap" style={{ marginTop: "var(--s4)" }}>
+      <figcaption className="chart-title">{spec.title}</figcaption>
       <svg
         viewBox={`0 0 ${W} ${H}`}
         className="tool-diagram"
@@ -147,7 +149,9 @@ export function ResultChart({ spec }: { spec: ChartSpec }) {
           {spec.yLabel}
         </text>
       </svg>
-      <figcaption className="sr-only">{spec.title}</figcaption>
+      <figcaption aria-hidden="true">
+        {spec.series.map((s) => s.label).join(" · ")}
+      </figcaption>
     </figure>
   );
 }

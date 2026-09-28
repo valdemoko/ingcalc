@@ -1,35 +1,27 @@
 import Link from "next/link";
 import { siteConfig, currentYear } from "@/config/site";
 import { BrandMark } from "@/components/layout/BrandMark";
-import { LIVE_CATEGORIES } from "@/lib/categories";
+import { MobileMenu } from "@/components/layout/MobileMenu";
+import { CategoriesDropdown } from "@/components/layout/CategoriesDropdown";
 import { ConsentTrigger } from "@/components/consent/ConsentTrigger";
-
-function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <nav className="footer-col" aria-label={title}>
-      <h3>{title}</h3>
-      <ul>{children}</ul>
-    </nav>
-  );
-}
 
 export function SiteHeader() {
   return (
     <header className="site-header">
-      <div className="container">
-        <Link href="/" className="brand">
+      <div className="header-inner">
+        <Link href="/" className="brand" aria-label={`${siteConfig.name} — home`}>
           <BrandMark size={24} />
           Ing<span>Calc</span>
         </Link>
+
         <nav className="site-nav" aria-label="Main">
-          <Link href="/tools">All tools</Link>
-          {LIVE_CATEGORIES.map((c) => (
-            <Link key={c.key} href={c.path}>
-              {c.name.replace(" & Climate", "").replace(" Engineering", "").replace(", Energy & Batteries", "")}
-            </Link>
-          ))}
+          <Link href="/tools">Tools</Link>
+          <CategoriesDropdown />
+          <Link href="/about">About</Link>
         </nav>
       </div>
+
+      <MobileMenu />
     </header>
   );
 }
@@ -51,20 +43,14 @@ export function SiteFooter() {
 
         <FooterCol title="Tools">
           <li><Link href="/tools">All Tools</Link></li>
-          {LIVE_CATEGORIES.map((c) => (
-            <li key={c.key}>
-              <Link href={c.path}>{c.name}</Link>
-            </li>
-          ))}
+          {siteConfig ? (
+            <FooterToolsLinks />
+          ) : null}
         </FooterCol>
 
         <FooterCol title="Resources">
           <li><Link href="/tools">Tool Directory</Link></li>
-          {LIVE_CATEGORIES.map((c) => (
-            <li key={c.key}>
-              <Link href={`${c.path}/guide`}>{c.name} Guide</Link>
-            </li>
-          ))}
+          <FooterGuideLinks />
         </FooterCol>
 
         <FooterCol title="About">
@@ -101,5 +87,41 @@ export function SiteFooter() {
         </div>
       </div>
     </footer>
+  );
+}
+
+function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <nav className="footer-col" aria-label={title}>
+      <h3>{title}</h3>
+      <ul>{children}</ul>
+    </nav>
+  );
+}
+
+/** Server-safe: category links for the footer Tools column. */
+import { LIVE_CATEGORIES } from "@/lib/categories";
+function FooterToolsLinks() {
+  return (
+    <>
+      {LIVE_CATEGORIES.map((c) => (
+        <li key={c.key}>
+          <Link href={c.path}>{c.name}</Link>
+        </li>
+      ))}
+    </>
+  );
+}
+
+/** Server-safe: guide links for the footer Resources column. */
+function FooterGuideLinks() {
+  return (
+    <>
+      {LIVE_CATEGORIES.map((c) => (
+        <li key={c.key}>
+          <Link href={`${c.path}/guide`}>{c.name} Guide</Link>
+        </li>
+      ))}
+    </>
   );
 }

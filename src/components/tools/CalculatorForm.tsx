@@ -101,8 +101,16 @@ export function CalculatorForm({ inputs, calc, toolName }: Props) {
 
   const fieldId = (id: string) => `f-${id}`;
 
+  // Primary result = first row flagged primary (engines guarantee at most one
+  // meaningful "headline" value; take the first for the hero readout).
+  const primary = result?.rows.find((r) => r.primary);
+
   return (
     <div className="calc-card">
+      <div className="calc-card-head">
+        <span className="calc-card-label">Calculator</span>
+        <span className="calc-card-name">{toolName}</span>
+      </div>
       <form onSubmit={onSubmit} noValidate>
         <fieldset>
           <legend className="sr-only">{toolName} inputs</legend>
@@ -160,7 +168,7 @@ export function CalculatorForm({ inputs, calc, toolName }: Props) {
               )}
             </div>
           ))}
-          <div style={{ display: "flex", gap: 10 }}>
+          <div className="calc-actions">
             <button type="submit" className="btn">
               Calculate
             </button>
@@ -180,6 +188,16 @@ export function CalculatorForm({ inputs, calc, toolName }: Props) {
       {result && submitted && (
         <section className="results" aria-live="polite">
           <h2>Results</h2>
+          {primary && (
+            <div className="result-hero">
+              <span className="result-hero-label">{primary.label}</span>
+              <span className="result-hero-value">
+                {formatValue(primary.value, primary.decimals)}
+                {primary.unit ? <span className="result-hero-unit"> {primary.unit}</span> : null}
+              </span>
+              {primary.hint && <span className="result-hero-hint">{primary.hint}</span>}
+            </div>
+          )}
           <table className="results-table">
             <caption className="sr-only">Calculation results</caption>
             <thead>
@@ -198,7 +216,8 @@ export function CalculatorForm({ inputs, calc, toolName }: Props) {
                     {row.hint && <span className="hint">{row.hint}</span>}
                   </td>
                   <td className="num">
-                    {formatValue(row.value, row.decimals)} {row.unit}
+                    {formatValue(row.value, row.decimals)}
+                    {row.unit ? <span className="result-unit"> {row.unit}</span> : null}
                   </td>
                 </tr>
               ))}

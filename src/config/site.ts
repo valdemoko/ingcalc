@@ -34,7 +34,7 @@ export const siteConfig = {
   adsense: {
     /** Publisher ID, e.g. ca-pub-1234567890123456. Empty = ads fully disabled. */
     client: process.env.NEXT_PUBLIC_ADSENSE_CLIENT || "",
-    /** Google-certified CMP script URL (e.g. CookieYes) for EEA consent. Empty = disabled. */
+    /** Google Privacy & Messaging CMP script URL (official Google CMP) for EEA consent. Empty = disabled. */
     cmpSrc: process.env.NEXT_PUBLIC_CMP_SRC || "",
   },
 

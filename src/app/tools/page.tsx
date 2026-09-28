@@ -1,8 +1,11 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { LIVE_CATEGORIES } from "@/lib/categories";
-import { TOOLS, toolsByCategory, toolPath } from "@/data/tools";
+import { TOOLS, toolsByCategory } from "@/data/tools";
 import { pageMetadata } from "@/lib/seo";
+import { SearchBox } from "@/components/tool/SearchBox";
+import { toSearchItems } from "@/lib/search";
+import { ToolCard } from "@/components/tools/ToolCard";
 
 export const metadata: Metadata = pageMetadata({
   title: "All Technical Calculators & Tools — by Category | IngCalc",
@@ -12,41 +15,63 @@ export const metadata: Metadata = pageMetadata({
 });
 
 export default function ToolsIndexPage() {
+  const SEARCH_ITEMS = toSearchItems(TOOLS);
+
   return (
     <>
-      <h1>All Technical Calculators &amp; Tools</h1>
-      <p className="summary">
-        {TOOLS.length} free calculators across five engineering sectors. Every tool documents its
-        formula, assumptions, limitations and a worked example — designed for practitioners who
-        need to understand the result, not just see a number.
-      </p>
+      <section className="page-head">
+        <span className="page-kicker">Tool directory</span>
+        <h1>All Technical Calculators &amp; Tools</h1>
+        <p className="summary">
+          Every tool documents its formula, assumptions, limitations and a worked example —
+          designed for practitioners who need to understand the result, not just see a number.
+        </p>
+        <div className="hero-search">
+          <SearchBox items={SEARCH_ITEMS} placeholder={`Search ${TOOLS.length} calculators…`} />
+        </div>
+      </section>
 
-      <section className="tool-directory">
-        {LIVE_CATEGORIES.map((cat) => {
-          const tools = toolsByCategory(cat.key);
-          if (tools.length === 0) return null;
-          return (
-            <section key={cat.key} className="tool-directory-section">
+      <div className="stats-band" role="list" aria-label="Library stats">
+        <div className="stat" role="listitem">
+          <span className="stat-num">{TOOLS.length}</span>
+          <span className="stat-label">Calculators</span>
+        </div>
+        <div className="stat" role="listitem">
+          <span className="stat-num">{LIVE_CATEGORIES.length}</span>
+          <span className="stat-label">Disciplines</span>
+        </div>
+        <div className="stat" role="listitem">
+          <span className="stat-num">100%</span>
+          <span className="stat-label">Free, no sign-up</span>
+        </div>
+        <div className="stat" role="listitem">
+          <span className="stat-num">{LIVE_CATEGORIES.length}</span>
+          <span className="stat-label">Design guides</span>
+        </div>
+      </div>
+
+      {LIVE_CATEGORIES.map((cat) => {
+        const tools = toolsByCategory(cat.key);
+        if (tools.length === 0) return null;
+        return (
+          <section key={cat.key} className="tool-directory-section">
+            <div className="section-head">
               <h2>
                 <Link href={cat.path}>{cat.name}</Link>
               </h2>
-              <p className="tool-directory-intro">{cat.description}</p>
-              <ul className="tool-list">
-                {tools.map((t) => (
-                  <li key={t.slug}>
-                    <Link href={toolPath(t)}>
-                      <span className="name">{t.name}</span>
-                      <span className="desc" style={{ display: "block" }}>
-                        {t.summary}
-                      </span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </section>
-          );
-        })}
-      </section>
+              <span className="section-count">
+                {tools.length} tool{tools.length === 1 ? "" : "s"}
+              </span>
+            </div>
+            <p className="tool-directory-intro">{cat.description}</p>
+            <div className="tool-cards">
+              {tools.map((t) => (
+                <ToolCard key={t.slug} tool={t} />
+              ))}
+            </div>
+          </section>
+        );
+      })}
 
       <section className="prose-section">
         <h2>How to use these tools</h2>
@@ -66,5 +91,3 @@ export default function ToolsIndexPage() {
     </>
   );
 }
-
-

@@ -7,6 +7,7 @@ import { getGuide } from "@/data/guides";
 import { categoryMetadata, breadcrumbJsonLd, type Crumb } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/layout/Breadcrumbs";
 import { JsonLd } from "@/components/seo/JsonLd";
+import { ToolCard } from "@/components/tools/ToolCard";
 
 export function generateStaticParams() {
   return LIVE_CATEGORIES.map((c) => ({ category: c.key }));
@@ -54,8 +55,13 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
         ]}
       />
       <Breadcrumbs crumbs={crumbs} />
-      <h1>{cat.name} Calculators</h1>
-      <p className="summary">{cat.intro}</p>
+
+      <section className="page-head">
+        <span className="page-kicker">{cat.name}</span>
+        <h1>{cat.name} Calculators</h1>
+        <p className="summary">{cat.intro}</p>
+        <span className="tool-count">{tools.length} calculators</span>
+      </section>
 
       {cat.groups && cat.groups.length > 0 ? (
         cat.groups.map((group) => {
@@ -64,37 +70,42 @@ export default async function CategoryPage({ params }: { params: Promise<{ categ
             .filter((t): t is NonNullable<typeof t> => Boolean(t));
           if (groupTools.length === 0) return null;
           return (
-            <section key={group.title} style={{ marginTop: "var(--s5)" }}>
-              <h2 style={{ fontSize: "1.1rem", marginBottom: "var(--s2)" }}>{group.title}</h2>
+            <section key={group.title} className="tool-directory-section">
+              <div className="section-head">
+                <h2>{group.title}</h2>
+                <span className="section-count">{groupTools.length}</span>
+              </div>
               {group.description && (
-                <p style={{ color: "var(--ink-faint)", fontSize: "0.92rem", marginBottom: "var(--s2)", maxWidth: "60ch" }}>
-                  {group.description}
-                </p>
+                <p className="tool-directory-intro">{group.description}</p>
               )}
-              <ul className="tool-list">
+              <div className="tool-cards">
                 {groupTools.map((t) => (
-                  <li key={t.slug}>
-                    <Link href={toolPath(t)}>
-                      <span className="name">{t.name}</span>
-                      <span className="desc" style={{ display: "block" }}>{t.description}</span>
-                    </Link>
-                  </li>
+                  <ToolCard key={t.slug} tool={t} />
                 ))}
-              </ul>
+              </div>
             </section>
           );
         })
       ) : (
-        <ul className="tool-list">
+        <div className="tool-cards">
           {tools.map((t) => (
-            <li key={t.slug}>
-              <Link href={toolPath(t)}>
-                <span className="name">{t.name}</span>
-                <span className="desc" style={{ display: "block" }}>{t.description}</span>
-              </Link>
-            </li>
+            <ToolCard key={t.slug} tool={t} />
           ))}
-        </ul>
+        </div>
+      )}
+
+      {ungrouped.length > 0 && cat.groups && cat.groups.length > 0 && (
+        <section className="tool-directory-section">
+          <div className="section-head">
+            <h2>More calculators</h2>
+            <span className="section-count">{ungrouped.length}</span>
+          </div>
+          <div className="tool-cards">
+            {ungrouped.map((t) => (
+              <ToolCard key={t.slug} tool={t} />
+            ))}
+          </div>
+        </section>
       )}
 
       {getGuide(cat.key) && (
