@@ -7,25 +7,15 @@ scale to hundreds of tools without code duplication.
 
 ## Current coverage
 
-**57 tools** across four categories, plus a reference guide per category:
+**113 tools** across eight live categories: Electrical, HVAC & Climate,
+Mechanical Engineering, Solar & Energy, Construction, Plumbing & Water,
+Thermodynamics & Heat Transfer, and CNC & Manufacturing. Three additional
+categories remain planned and do not generate thin routes. Five published
+reference guides cover electrical, HVAC, mechanical, solar, and construction.
 
-- **Electrical (18):** circuit design cluster (wire size, voltage drop, derating,
-  breakers, reactance), power cluster (Ohm, kVA→A, 3-phase, PF correction,
-  transformers, motors, generators), and application cluster (energy cost,
-  EV charging, LED resistors, dividers, color codes).
-- **HVAC (13):** load estimation (cooling, heating, degree-days), air-side
-  (duct sizing, velocity, ACH, sensible heat, fan laws), comfort/health
-  (dew point, heat index, wind chill), efficiency and cost.
-- **Mechanical (16):** power transmission (gears, pulleys, belts, chains,
-  gear geometry), fasteners (torque, wrench extensions, tap drills),
-  machine elements (bearings, springs), fluid power (cylinders, pumps),
-  engine math, metal weight.
-- **Solar & Energy (10):** output and sizing (panels, strings, controllers),
-  batteries (runtime, banks, charging), and economics (savings, tilt).
-
-Every tool page includes: the formula, a worked example, result interpretation,
-assumptions, limitations, substantive FAQs, technical references, and related
-tool links. Reference guides per category tie each cluster together.
+Every tool page includes the formula, a worked example, result interpretation,
+assumptions, limitations, technical references, and related-tool links; pages
+also include substantive FAQs where available.
 
 ## Architecture
 
@@ -34,7 +24,7 @@ src/
   config/site.ts          # Single source of truth: brand, URL, AdSense, CMP, contact
   lib/
     types.ts              # ToolDefinition / FieldDef / CalcOutput contract
-    categories.ts         # 10 sectors (4 live; planned ones get no routes)
+    categories.ts         # 11 sectors (8 live; planned ones get no routes)
     seo.ts                # Canonical URLs, metadata, JSON-LD builders
     format.ts             # Shared number formatting
     engines/              # Pure calculation functions (no React) — testable
