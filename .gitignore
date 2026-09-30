@@ -1,4 +1,8 @@
 node_modules/
+
+# opennext / wrangler build output
+.open-next/
+.wrangler/
 .next/
 out/
 .env
