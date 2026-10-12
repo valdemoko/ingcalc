@@ -140,7 +140,7 @@ export const SOLAR2_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "Battery University — series/parallel configurations", url: "https://batteryuniversity.com/article/bu-302-series-configuring-battery-packs" },
+      { label: "Battery University — series/parallel configurations", url: "https://batteryuniversity.com/article/bu-302-series-and-parallel-battery-configurations/" },
     ],
     related: ["battery-runtime-calculator", "off-grid-system-calculator", "battery-charge-time-calculator", "charge-controller-calculator"],
     priority: "A",
@@ -257,7 +257,7 @@ export const SOLAR2_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "NREL — solar photovoltaic system cost benchmark", url: "https://www.nrel.gov/solar/market-research-analysis/solar-installed-system-cost" },
+      { label: "NREL — solar photovoltaic system cost benchmark", url: "https://www.nlr.gov/solar/market-research-analysis/solar-installed-system-cost" },
       { label: "LBNL — Selling Into the Sun (PV home value)", url: "https://emp.lbl.gov/publications/selling-sun-price-premium-analysis" },
     ],
     related: ["solar-panel-output-calculator", "panel-count-calculator", "dc-ac-ratio-calculator", "energy-cost-calculator"],
@@ -321,7 +321,7 @@ export const SOLAR2_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "NREL — solar resource and tilt optimization data", url: "https://www.nrel.gov/gis/solar.html" },
+      { label: "NREL — solar resource and tilt optimization data", url: "https://nsrdb.nlr.gov/" },
       { label: "Global Solar Atlas — location-specific yield", url: "https://globalsolaratlas.info/" },
     ],
     related: ["solar-panel-output-calculator", "solar-savings-calculator", "panel-count-calculator", "charge-controller-calculator"],
@@ -377,7 +377,7 @@ export const SOLAR2_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "NREL PVWatts — production estimation methodology", url: "https://pvwatts.nrel.gov/" },
+      { label: "NREL PVWatts — production estimation methodology", url: "https://pvwatts.nlr.gov/" },
     ],
     related: ["solar-panel-output-calculator", "solar-savings-calculator", "off-grid-system-calculator", "battery-bank-calculator"],
     priority: "A",

@@ -129,7 +129,7 @@ export const HVAC3_TOOLS: ToolDefinition[] = [
     ],
     references: [
       { label: "DOE — heat pump efficiency standards (HSPF/HSPF2)", url: "https://www.energy.gov/eere/buildings/appliance-and-equipment-standards-program" },
-      { label: "NEEP — cold-climate heat pump performance data", url: "https://neep.org/heating-technology/cold-climate-air-source-heat-pumps" },
+      { label: "NEEP — cold-climate heat pump performance data", url: "https://neep.org/heating-electrification/ccashp-specification-product-list" },
     ],
     related: ["degree-day-energy-calculator", "heating-load-calculator", "seer-eer-converter", "energy-cost-calculator"],
     priority: "A",

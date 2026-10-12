@@ -274,7 +274,7 @@ export const MECHANICAL4_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "Machinery's Handbook — belt drive fundamentals", url: "https://www.industrialpress.com/machinerys-handbook" },
+      { label: "Machinery's Handbook — belt drive fundamentals", url: "https://books.industrialpress.com/machinery-handbook/" },
     ],
     related: ["pulley-rpm-calculator", "belt-length-calculator", "chain-length-calculator", "gear-ratio-calculator"],
     priority: "B",

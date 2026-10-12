@@ -63,7 +63,7 @@ export const PLUMBING_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "Engineering ToolBox — water flow and velocity in pipes", url: "https://www.engineeringtoolbox.com/water-velocity-pipe-d_1536.html" },
+      { label: "Engineering ToolBox — water flow and velocity in pipes", url: "https://www.engineeringtoolbox.com/pipe-velocity-d_1096.html" },
     ],
     related: ["pipe-size-calculator", "pipe-pressure-drop-calculator", "pipe-volume-calculator", "heating-power-calculator"],
     priority: "A",
@@ -137,8 +137,8 @@ export const PLUMBING_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "Engineering ToolBox — Darcy-Weisbach pressure loss", url: "https://www.engineeringtoolbox.com/darcy-weisbach-d_646.html" },
-      { label: "Swamee & Jain (1976) — explicit friction factor equations", url: "https://doi.org/10.1061/(ASCE)0733-9429(1976)102:5(657)" },
+      { label: "Engineering ToolBox — Darcy-Weisbach pressure loss", url: "https://www.engineeringtoolbox.com/darcy-weisbach-equation-d_646.html" },
+      { label: "Swamee & Jain (1976) — explicit friction factor equations", url: "https://doi.org/10.1061/jyceaj.0004542" },
       { label: "Copper Development Association — tube sizing (Hazen-Williams tables)", url: "https://copper.org/markets-and-applications/building-construction/strengthening-plumbing-systems/copper-tube-sizing-calculator/" },
     ],
     related: ["pipe-flow-calculator", "pipe-size-calculator", "pump-power-calculator", "pipe-volume-calculator"],
@@ -199,7 +199,7 @@ export const PLUMBING_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "Engineering ToolBox — pipe sizing charts", url: "https://www.engineeringtoolbox.com/pipe-sizing-d_851.html" },
+      { label: "Engineering ToolBox — pipe sizing charts", url: "https://www.engineeringtoolbox.com/hot-cold-water-pipe-sizes-d_83.html" },
     ],
     related: ["pipe-flow-calculator", "pipe-pressure-drop-calculator", "pipe-volume-calculator", "tank-volume-calculator"],
     priority: "A",
@@ -263,7 +263,7 @@ export const PLUMBING_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "Engineering ToolBox — pipe and tubing volume", url: "https://www.engineeringtoolbox.com/pipe-volume-d_1072.html" },
+      { label: "Engineering ToolBox — pipe and tubing volume", url: "https://www.engineeringtoolbox.com/pipe-water-content-volume-weight-d_1734.html" },
     ],
     related: ["tank-volume-calculator", "pipe-flow-calculator", "pipe-size-calculator", "sensible-heat-latent-calculator"],
     priority: "B",

@@ -553,7 +553,7 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     ],
     references: [
       { label: "SAE J1772 — AC charging standard", url: "https://www.sae.org/standards/content/j1772_202101/" },
-      { label: "DOE — electric vehicle charging basics", url: "https://afdc.energy.gov/fuels/electricity-stations.html" },
+      { label: "DOE — electric vehicle charging basics", url: "https://afdc.energy.gov/fuels/electricity-stations" },
     ],
     related: ["energy-cost-calculator", "generator-sizing-calculator", "breaker-size-calculator", "wire-size-calculator"],
     priority: "A",

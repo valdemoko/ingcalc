@@ -7,7 +7,8 @@ import { siteConfig, INSTITUTIONAL_PAGES } from "@/config/site";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastMod = new Date().toISOString().split("T")[0];
+  // Fecha estática de revisión editorial real para evitar devaluar la señal de rastreo (anti-patrón de lastmod diario)
+  const lastMod = "2026-09-28";
 
   const institutionalPages: MetadataRoute.Sitemap = INSTITUTIONAL_PAGES.filter(
     (p) => p.indexable,

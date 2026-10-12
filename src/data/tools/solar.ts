@@ -54,7 +54,7 @@ export const SOLAR_TOOLS: ToolDefinition[] = [
     ],
     references: [
       { label: "Global Solar Atlas — World Bank/ESMAP irradiance data", url: "https://globalsolaratlas.info/" },
-      { label: "NREL PVWatts — reference derate methodology", url: "https://pvwatts.nrel.gov/" },
+      { label: "NREL PVWatts — reference derate methodology", url: "https://pvwatts.nlr.gov/" },
     ],
     sections: [
       {
@@ -201,7 +201,7 @@ export const SOLAR_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "NREL — off-grid PV system design principles", url: "https://www.nrel.gov/research/publications.html" },
+      { label: "NREL — off-grid PV system design principles", url: "https://www.nlr.gov/research/publications" },
       { label: "Global Solar Atlas — monthly PSH data", url: "https://globalsolaratlas.info/" },
     ],
     related: ["battery-runtime-calculator", "solar-panel-output-calculator", "charge-controller-calculator", "wire-size-calculator"],

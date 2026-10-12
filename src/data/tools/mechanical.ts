@@ -53,7 +53,7 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "Machinery's Handbook — gear ratio fundamentals", url: "https://www.industrialpress.com/machinerys-handbook" },
+      { label: "Machinery's Handbook — gear ratio fundamentals", url: "https://books.industrialpress.com/machinery-handbook/" },
     ],
     related: ["gear-geometry-calculator", "pulley-system-calculator", "torque-power-calculator", "shaft-torsion-calculator"],
     priority: "A",
@@ -188,8 +188,8 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "ISO 898-1 — Mechanical properties of fasteners", url: "https://www.iso.org/standard/64773.html" },
-      { label: "VDI 2230 — Systematic calculation of bolted joints", url: "https://www.vdi.de/richtlinien/details/vdi-2230-blatt-1-systematische-berechnung-hochbeanspruchter-schraubenverbindungen" },
+      { label: "ISO 898-1 — Mechanical properties of fasteners", url: "https://www.iso.org/standard/60610.html" },
+      { label: "VDI 2230 — Systematic calculation of bolted joints", url: "https://www.vdi.de/mitgliedschaft/vdi-richtlinien/details/vdi-2230-blatt-1-systematische-berechnung-hochbeanspruchter-schraubenverbindungen-zylindrische-einschraubenverbindungen" },
     ],
     sections: [
       {
@@ -262,7 +262,7 @@ export const MECHANICAL_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "Machinery's Handbook — belt drive geometry", url: "https://www.industrialpress.com/machinerys-handbook" },
+      { label: "Machinery's Handbook — belt drive geometry", url: "https://books.industrialpress.com/machinery-handbook/" },
     ],
     related: ["pulley-rpm-calculator", "gear-ratio-calculator", "chain-length-calculator", "torque-power-calculator"],
     priority: "B",

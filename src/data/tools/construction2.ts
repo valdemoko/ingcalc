@@ -378,7 +378,7 @@ export const CONSTRUCTION2_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "USGS — aggregates data", url: "https://www.usgs.gov/centers/national-minerals-information-center/aggregates-information" },
+      { label: "USGS — aggregates data", url: "https://www.usgs.gov/centers/national-minerals-information-center/aggregates-statistics-and-information" },
       { label: "NSSGA — National Stone, Sand & Gravel Association", url: "https://www.nssga.org/" },
     ],
     sections: [

@@ -201,7 +201,7 @@ export const CONSTRUCTION4_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "EPA — stormwater management best practices", url: "https://www.epa.gov/npdes/stormwater-management-best-practices" },
+      { label: "EPA — stormwater management best practices", url: "https://www.epa.gov/npdes/national-menu-best-management-practices-bmps-stormwater" },
       { label: "USGBC — common runoff coefficients (HEC-22 ranges)", url: "https://www.usgbc.org/resources/homes-table-8-common-runoff-coefficients" },
     ],
     related: ["tank-volume-calculator", "pipe-size-calculator", "cut-fill-calculator", "gravel-calculator"],
@@ -270,7 +270,7 @@ export const CONSTRUCTION4_TOOLS: ToolDefinition[] = [
     ],
     references: [
       { label: "American Wood Council — Wood Handbook ( densities)", url: "https://www.awc.org/" },
-      { label: "USDA Forest Products Laboratory — Wood Handbook", url: "https://www.fpl.fs.usda.gov/" },
+      { label: "USDA Forest Products Laboratory — Wood Handbook", url: "https://research.fs.usda.gov/fpl/wood-handbook" },
     ],
     related: ["board-foot-calculator", "metal-weight-calculator", "stud-wall-calculator", "concrete-calculator"],
     priority: "B",

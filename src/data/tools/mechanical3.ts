@@ -200,7 +200,7 @@ export const MECHANICAL3_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "DOE Motor System Master — efficiency and load factor", url: "https://www.energy.gov/eere/amo/motor-system-master" },
+      { label: "DOE — determining electric motor load and efficiency", url: "https://www.energy.gov/sites/prod/files/2014/04/f15/10097517.pdf" },
     ],
     related: ["power-from-force-calculator", "pump-power-calculator", "motor-current-calculator", "energy-cost-calculator"],
     priority: "B",

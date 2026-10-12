@@ -59,7 +59,7 @@ export const SOLAR3_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "NREL — off-grid PV system sizing guidance", url: "https://www.nrel.gov/solar/" },
+      { label: "NREL — off-grid PV system sizing guidance", url: "https://www.nlr.gov/solar/" },
     ],
     related: ["off-grid-system-calculator", "inverter-sizing-calculator", "battery-runtime-calculator", "panel-count-calculator"],
     priority: "A",
@@ -117,7 +117,7 @@ export const SOLAR3_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "DOE — inverters and converters for PV systems", url: "https://www.energy.gov/eere/solar/solar-integration-inverters-and-grid-services" },
+      { label: "DOE — inverters and converters for PV systems", url: "https://www.energy.gov/cmei/systems/solar-integration-inverters-and-grid-services-basics" },
     ],
     related: ["energy-consumption-calculator", "off-grid-system-calculator", "generator-sizing-calculator", "battery-runtime-calculator"],
     priority: "A",
@@ -173,7 +173,7 @@ export const SOLAR3_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "NREL PVWatts — inverter loss model", url: "https://pvwatts.nrel.gov/" },
+      { label: "NREL PVWatts — inverter loss model", url: "https://pvwatts.nlr.gov/" },
     ],
     related: ["solar-panel-output-calculator", "string-sizing-calculator", "solar-savings-calculator", "panel-count-calculator"],
     priority: "B",

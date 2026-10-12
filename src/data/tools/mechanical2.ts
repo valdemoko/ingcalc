@@ -64,7 +64,7 @@ export const MECHANICAL2_TOOLS: ToolDefinition[] = [
       },
     ],
     references: [
-      { label: "Machinery's Handbook — belt drive speed calculations", url: "https://www.industrialpress.com/machinerys-handbook" },
+      { label: "Machinery's Handbook — belt drive speed calculations", url: "https://books.industrialpress.com/machinery-handbook/" },
     ],
     related: ["belt-length-calculator", "gear-ratio-calculator", "torque-power-calculator", "chain-length-calculator"],
     priority: "A",
