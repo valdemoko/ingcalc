@@ -6,7 +6,7 @@ export const HVAC_TOOLS: ToolDefinition[] = [
     slug: "btu-calculator",
     category: "hvac",
     name: "BTU Calculator",
-    title: "BTU Calculator — AC Cooling Load & Room Size | IngCalc",
+    title: "AC BTU Calculator — Air Conditioner Size by Room | IngCalc",
     description:
       "Estimate the cooling load in BTU/h for any room from floor area, climate, insulation, sun exposure, occupants and appliances. Includes tonnage and CFM guidance.",
     summary:
@@ -262,7 +262,7 @@ export const HVAC_TOOLS: ToolDefinition[] = [
     slug: "airflow-cfm-calculator",
     category: "hvac",
     name: "Airflow / ACH Calculator",
-    title: "CFM & Air Changes per Hour Calculator | IngCalc",
+    title: "Air Changes per Hour (ACH) Calculator — CFM & L/s | IngCalc",
     description:
       "Convert between airflow (CFM, L/s, m³/h) and air changes per hour for any room volume. Includes typical ACH targets for bedrooms, bathrooms and kitchens.",
     summary:

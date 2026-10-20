@@ -9,3 +9,14 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+
+# Generated image routes are exported without a file extension, so Static Assets
+# would serve them with no Content-Type.
+/opengraph-image
+  Content-Type: image/png
+
+/icon
+  Content-Type: image/png
+
+/apple-icon
+  Content-Type: image/png

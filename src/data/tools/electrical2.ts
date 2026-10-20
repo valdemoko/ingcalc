@@ -100,12 +100,20 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     slug: "energy-cost-calculator",
     category: "electrical",
     name: "Electricity Cost Calculator",
-    title: "Electricity Cost Calculator — kWh & Appliance Cost | IngCalc",
+    title: "Appliance Running Cost Calculator — kWh & Electricity | IngCalc",
     description:
-      "Calculate electricity cost in kWh per day, month and year — from device watts and hours, or directly from metered kWh — at your electricity rate.",
+      "Calculate electricity cost in kWh per day, month and year. Free kWh cost calculator and electricity price calculator for home appliances, devices, and power consumption.",
     summary:
-      "Enter device watts and hours per day (or your metered kWh) plus your rate to get daily, monthly and yearly energy and cost.",
-    keywords: ["electricity cost calculator", "kwh cost calculator", "electricity cost calculator kwh", "appliance running cost", "power consumption calculator"],
+      "Enter device watts and hours per day (or metered kWh) plus your electricity rate ($/kWh) to calculate daily, monthly, and yearly appliance running costs.",
+    keywords: [
+      "electricity cost calculator",
+      "kwh cost calculator",
+      "kwh price calculator",
+      "electricity cost calculator kwh",
+      "appliance running cost calculator",
+      "power consumption calculator",
+      "electricity price calculator",
+    ],
     inputs: [
       {
         id: "mode", label: "Input method", kind: "select",
@@ -115,7 +123,7 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
         ],
         defaultOption: "watts",
       },
-      { id: "watts", label: "Device power", kind: "number", unit: "W", defaultValue: 1500, min: 0.5, step: 10, showIf: (raw) => (raw.mode ?? "watts") === "watts" },
+      { id: "watts", label: "Device power", kind: "number", unit: "W", defaultValue: 1500, min: 0.5, step: 10, showIf: (raw) => (raw.mode ?? "watts") === "watts", help: "Typical: Space Heater 1500W, Central AC 3500W, Refrigerator 150W, Gaming PC 450W, EV Level 2 7200W, Water Heater 4500W." },
       { id: "quantity", label: "Number of devices", kind: "number", unit: "×", defaultValue: 1, min: 1, max: 1000, step: 1, showIf: (raw) => (raw.mode ?? "watts") === "watts" },
       { id: "hours", label: "Hours running per day", kind: "number", unit: "h", defaultValue: 4, min: 0, max: 24, step: 0.5, showIf: (raw) => (raw.mode ?? "watts") === "watts" },
       { id: "kwhPerDay", label: "Energy consumed", kind: "number", unit: "kWh/day", defaultValue: 6, min: 0.01, step: 0.1, showIf: (raw) => raw.mode === "kwh", help: "From a meter, smart plug or the appliance's measured consumption." },
@@ -147,8 +155,12 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     ],
     faqs: [
       {
-        q: "How do I find my electricity rate?",
-        a: "Divide the total amount of a bill by the kWh consumed — that all-in figure includes delivery and taxes, which is what you actually pay.",
+        q: "How do I calculate appliance running costs?",
+        a: "Find the wattage on the appliance label, multiply by the hours used per day, divide by 1,000 to get daily kWh, and multiply by your utility's electricity rate per kWh ($/kWh). Formula: Cost = (Watts × Hours / 1,000) × Rate.",
+      },
+      {
+        q: "How do I find my electricity rate and kWh price?",
+        a: "Look at your most recent electric bill and divide the total final balance by the total kWh consumed. This gives your effective all-in price per kWh including transmission, delivery, and taxes.",
       },
       {
         q: "How do I calculate cost from kWh directly?",
@@ -162,9 +174,22 @@ export const ELECTRICAL2_TOOLS: ToolDefinition[] = [
     references: [
       { label: "EIA — residential electricity prices and consumption", url: "https://www.eia.gov/electricity/" },
     ],
+    sections: [
+      {
+        title: "Typical wattage and estimated running costs for household appliances",
+        bullets: [
+          "Space Heater (1,500 W): 4 h/day at $0.15/kWh = 6.0 kWh/day → ~$27.40/month ($328/year).",
+          "Central Air Conditioner (3,500 W): 6 h/day = 21.0 kWh/day → ~$95.90/month in peak summer.",
+          "Electric Water Heater (4,500 W, cycles ~3 h/day): 13.5 kWh/day → ~$61.60/month ($740/year).",
+          "Refrigerator / Freezer (150 W avg duty): ~1.5 kWh/day → ~$6.85/month ($82/year).",
+          "Desktop Gaming PC (450 W): 5 h/day = 2.25 kWh/day → ~$10.30/month ($123/year).",
+          "Level 2 EV Charger (7,200 W / 32 A): 4 h full charge = 28.8 kWh → ~$4.32 per charging session.",
+        ],
+      },
+    ],
     related: ["ohms-law-calculator", "kva-to-amps-calculator", "cooling-cost-calculator", "ev-charge-time-calculator"],
     priority: "A",
-    lastUpdated: "2026-09-15",
+    lastUpdated: "2026-10-13",
   },
   {
     slug: "transformer-sizing-calculator",

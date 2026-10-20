@@ -21,11 +21,15 @@ function baseMetadata(opts: {
       siteName: siteConfig.name,
       type: opts.type ?? "website",
       locale: siteConfig.locale,
+      // Pages that define their own openGraph drop the file-based opengraph-image,
+      // so it is referenced explicitly (generated at /opengraph-image, 1200x630).
+      images: [{ url: absoluteUrl("/opengraph-image"), width: 1200, height: 630, alt: siteConfig.name }],
     },
     twitter: {
-      card: "summary",
+      card: "summary_large_image",
       title: opts.title,
       description: opts.description,
+      images: [absoluteUrl("/opengraph-image")],
     },
   };
 }
