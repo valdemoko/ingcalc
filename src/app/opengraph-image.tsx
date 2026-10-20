@@ -6,6 +6,9 @@ export const size = {
 };
 export const contentType = "image/png";
 
+// Required for `output: "export"` (STATIC_EXPORT=1); a no-op on the OpenNext build.
+export const dynamic = "force-static";
+
 export default function Image() {
   return new ImageResponse(
     (
