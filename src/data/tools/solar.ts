@@ -6,12 +6,22 @@ export const SOLAR_TOOLS: ToolDefinition[] = [
     slug: "solar-panel-output-calculator",
     category: "solar-energy",
     name: "Solar Panel Output Calculator",
-    title: "Solar Panel Output Calculator — kWh per Day | IngCalc",
+    title: "Solar Panel Output Calculator (kWh) — Daily & Annual Production | IngCalc",
     description:
-      "Calculate solar panel energy output per day, month and year from wattage and local peak sun hours, with a documented derate factor for real-world losses.",
+      "Calculate solar panel kWh output per day, month and year. Free solar panel calculator kWh and wattage estimator with daily and annual production based on peak sun hours.",
     summary:
-      "Enter panel wattage and your location's peak sun hours to get realistic daily, monthly and yearly energy — including the standard loss derate.",
-    keywords: ["solar panel output calculator", "kwh per day solar", "solar panel production calculator", "peak sun hours calculator"],
+      "Enter panel wattage and your location's peak sun hours to get realistic daily, monthly and yearly energy (kWh) — including the standard loss derate.",
+    keywords: [
+      "solar panel output calculator",
+      "kwh solar panel calculator",
+      "solar panel calculator kwh",
+      "solar power calculator kwh",
+      "solar panels kwh calculator",
+      "solar panel wattage calculator",
+      "solar panel daily output calculator",
+      "solar panel annual output calculator",
+      "peak sun hours calculator",
+    ],
     inputs: [
       { id: "wattPeak", label: "Panel/array wattage", kind: "number", unit: "Wp", defaultValue: 400, min: 1, step: 10, help: "Total Wp for the array (e.g. 10 panels × 400 W = 4000)." },
       { id: "psh", label: "Peak sun hours per day", kind: "number", unit: "h", defaultValue: 4.5, min: 0.5, step: 0.1, help: "Average daily equivalent full-sun hours. Check the Global Solar Atlas for your location." },
@@ -44,8 +54,16 @@ export const SOLAR_TOOLS: ToolDefinition[] = [
     ],
     faqs: [
       {
+        q: "How do I calculate kWh from solar panel wattage?",
+        a: "Multiply panel wattage (W) by daily peak sun hours (PSH), multiply by the derate efficiency factor (typically 0.80), and divide by 1,000. Formula: Daily kWh = (Watts × PSH × Derate) / 1,000.",
+      },
+      {
         q: "How much does a 400 W panel produce per day?",
-        a: "Depends on your PSH: at 4.5 PSH with typical losses, about 1.4–1.5 kWh/day. Multiply by 365 for the yearly figure (~525 kWh).",
+        a: "Depends on your PSH: at 4.5 PSH with typical losses (0.8 derate), about 1.44 kWh/day. Multiply by 365 for the yearly figure (~525 kWh).",
+      },
+      {
+        q: "How many solar panels are needed for 30 kWh per day?",
+        a: "At 4.5 peak sun hours with standard 400 W panels (producing ~1.44 kWh/day each), you need approximately 21 panels (around 8.4 kW total system size) to meet 30 kWh daily demand.",
       },
       {
         q: "What is a good derate factor?",
@@ -70,6 +88,16 @@ export const SOLAR_TOOLS: ToolDefinition[] = [
           "Soiling: dust, pollen and bird droppings cost 2–5% typically, more in dry climates without rain to clean the array.",
           "Orientation and tilt: the correction factor this calculator applies assumes reasonable tilt; flat-mounted panels lose 10–15% versus optimal tilt at most latitudes.",
           "Inverter efficiency: grid-tied systems lose a further 3–6% converting DC to AC — the panel figure here is DC-side.",
+        ],
+      },
+      {
+        title: "Reverse sizing: How many solar panels for your monthly electric bill (kWh)?",
+        paragraphs: [
+          "If your electricity bill lists total monthly consumption (e.g., 900 kWh/month) and you want to calculate how many solar panels you need, use this practical reverse sizing method:",
+          "1. Calculate daily consumption target: Monthly kWh ÷ 30 days = Daily target (e.g., 900 kWh ÷ 30 = 30 kWh/day).",
+          "2. Calculate daily energy per 400 W panel: 400 W × 4.5 Peak Sun Hours × 0.80 Derate ÷ 1,000 = ~1.44 kWh/day per panel.",
+          "3. Divide daily target by single panel output: 30 kWh/day ÷ 1.44 kWh/panel ≈ 20.8 → 21 panels needed (an 8.4 kW DC system).",
+          "Adding a 10%–15% margin covers cloudy winter days, seasonal sun angle shifts, and normal module degradation over time.",
         ],
       },
     ],

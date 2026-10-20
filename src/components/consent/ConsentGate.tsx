@@ -17,11 +17,12 @@ import { siteConfig } from "@/config/site";
  *   scripts in, so nothing loads regardless of consent.
  */
 export function ConsentGate({ children }: { children: ReactNode }) {
+  const { decision } = useConsent();
+
   if (siteConfig.adsense.cmpSrc) {
     return <>{children}</>;
   }
 
-  const { decision } = useConsent();
   if (decision !== "accepted") return null;
   return <>{children}</>;
 }

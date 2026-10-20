@@ -16,12 +16,19 @@ export const ELECTRICAL_TOOLS: ToolDefinition[] = [
     slug: "voltage-drop-calculator",
     category: "electrical",
     name: "Voltage Drop Calculator",
-    title: "Voltage Drop Calculator (NEC) — Single & Three Phase | IngCalc",
+    title: "Voltage Drop Calculator (NEC) — 3 Phase & Single Phase | IngCalc",
     description:
-      "Calculate voltage drop, % drop, end-of-line voltage and power lost for copper or aluminum circuits. Single and three phase, AWG and metric, with NEC-based conductor data.",
+      "Calculate voltage drop, % drop, end-of-line voltage and power lost for copper or aluminum circuits. Single and 3 phase voltage drop calculator with NEC Chapter 9 Table 8 conductor resistances.",
     summary:
-      "Find the voltage drop in a copper circuit — absolute volts, percentage, final load voltage and heat loss. Uses NEC Chapter 9 Table 8 conductor resistances.",
-    keywords: ["voltage drop calculator", "voltage drop formula", "wire voltage loss", "3 phase voltage drop"],
+      "Find the voltage drop in single-phase and 3-phase circuits — absolute volts, percentage, final load voltage and heat loss. Uses NEC Chapter 9 Table 8 conductor resistances.",
+    keywords: [
+      "voltage drop calculator",
+      "3 phase voltage drop calculator",
+      "voltage drop formula",
+      "wire voltage loss",
+      "4/0 awg aluminum resistance ohms per 1000 ft",
+      "nec voltage drop",
+    ],
     inputs: [
       {
         id: "voltage", label: "Source voltage", kind: "number", unit: "V",
